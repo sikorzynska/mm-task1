@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mentormate.UnitTestsTask", "Mentormate.UnitTestsTask\Mentormate.UnitTestsTask.csproj", "{D445BCAC-DA5B-4E06-9811-0C83A8098BC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mentormate.UnitTestsTask.Tests", "Mentormate.UnitTestsTask.Tests\Mentormate.UnitTestsTask.Tests.csproj", "{9D92319B-9624-4851-BAED-DB4A13C45B5B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D445BCAC-DA5B-4E06-9811-0C83A8098BC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D445BCAC-DA5B-4E06-9811-0C83A8098BC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D445BCAC-DA5B-4E06-9811-0C83A8098BC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D445BCAC-DA5B-4E06-9811-0C83A8098BC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D92319B-9624-4851-BAED-DB4A13C45B5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D92319B-9624-4851-BAED-DB4A13C45B5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D92319B-9624-4851-BAED-DB4A13C45B5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D92319B-9624-4851-BAED-DB4A13C45B5B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F5184A1-A1D5-474A-98B7-D55CC550E690}
+	EndGlobalSection
+EndGlobal
