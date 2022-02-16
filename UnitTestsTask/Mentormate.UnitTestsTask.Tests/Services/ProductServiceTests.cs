@@ -4,7 +4,6 @@ using Mentormate.UnitTestsTask.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using System.Threading.Tasks;
 
 namespace Mentormate.UnitTestsTask.Tests.Services
 {
@@ -31,74 +30,171 @@ namespace Mentormate.UnitTestsTask.Tests.Services
         }
 
         [TestMethod]
-        public Task GetProductPrice_ShouldReturnCorrectProductPrice()
+        public void GetProductPrice_ShouldReturnCorrectProductPrice()
         {
             //Arrange
-            var productId = 5;
-            var productName = "Very ripe banana";
-            var productPrice = 13;
+            var userId = 1;
 
-            var product = new Product()
-            {
-                Id = productId,
-                Name = productName,
-            };
+            var product = DefaultProduct();
+            var basePrice = DefaultBasePrice(true);
 
-            var basePrice = new BasePrice()
-            {
-                IsFinal = true,
-                Ammount = 13,
-            };
+            var expectedId = product.Id;
+            var expectedName = product.Name;
+            var expectedPrice = basePrice.Ammount;
 
-            var expectedId = productId;
-            var expectedName = productName;
-            var expectedPrice = productPrice;
-
-            _productRepository.Setup(x => x.GetById(productId)).Returns(product);
-            _priceRepository.Setup(x => x.GetBasePrice(productId)).Returns(basePrice);
+            SetupProductRepository(product.Id, product);
+            SetupPriceRepository(product.Id, basePrice);
 
             //Act
-            var actualResult = _productService.GetProductPrice(productId, 3, DateTime.UtcNow);
+            var actualResult = _productService!.GetProductPrice(product.Id, userId, DateTime.UtcNow);
 
             //Assert
             Assert.AreEqual(expectedId, actualResult.Id, "ID should match.");
             Assert.AreEqual(expectedName, actualResult.Name, "Name should match.");
             Assert.AreEqual(expectedPrice, actualResult.Price, "Price should match.");
-            return Task.CompletedTask;
         }
 
         [TestMethod]
-        public Task GetProductPrice_ShouldApplyDiscount()
+        public void GetProductPrice_ShouldApplyDiscountBecauseItsMonday()
         {
             //Arrange
-            var productId = 5;
-            var fakeId = 3;
-            var productName = "Very ripe banana";
+            var userId = 1;
+            var discountAmount = 5;
 
-            var product = new Product()
-            {
-                Id = productId,
-                Name = productName,
-            };
+            var product = DefaultProduct();
+            var basePrice = DefaultBasePrice(false);
 
-            _productRepository.Setup(x => x.GetById(productId)).Returns(product);
+            var expectedPrice = basePrice.Ammount - discountAmount;
+            //Get last week's monday
+            DateTime mondayOfLastWeek = DateTime.UtcNow.AddDays(-(int)DateTime.UtcNow.DayOfWeek - 6);
+
+            SetupAllRepositories(product.Id, userId, product, basePrice, discountAmount);
 
             //Act
-            Action expectedAct = () => { throw new ArgumentException($"Cannot find product with id: {fakeId}."); };
-            var expectedException = Assert.ThrowsException<ArgumentException>(expectedAct);
-
-            try
-            {
-                _productService.GetProductPrice(fakeId, 3, DateTime.UtcNow);
-                Assert.IsTrue(false, "Should have thrown the exception");
-            }
-            catch (ArgumentException ex)
-            {
-                Assert.AreEqual(ex.Message, expectedException.Message, "Exception messages should be the same.");
-            }
+            var actualResult = _productService!.GetProductPrice(product.Id, userId, mondayOfLastWeek);
 
             //Assert
-            return Task.CompletedTask;
+            Assert.AreEqual(expectedPrice, actualResult.Price, "Price should match.");
         }
+
+        [TestMethod]
+        public void GetProductPrice_ShouldApplyDiscountBecauseIts10AM()
+        {
+            //Arrange
+            var userId = 1;
+            var discountAmount = 5;
+
+            var product = DefaultProduct();
+            var basePrice = DefaultBasePrice(false);
+
+            var expectedPrice = basePrice.Ammount - discountAmount;
+            string dateString = "2005-05-05 10:12 AM";
+            DateTime date = DateTime.ParseExact(dateString, "yyyy-MM-dd HH:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+
+            SetupAllRepositories(product.Id, userId, product, basePrice, discountAmount);
+
+            //Act
+            var actualResult = _productService!.GetProductPrice(product.Id, userId, date);
+
+            //Assert
+            Assert.AreEqual(expectedPrice, actualResult.Price, "Price should match.");
+        }
+
+        [TestMethod]
+        public void GetProductPrice_DiscountShouldNotMakePriceBelowZero()
+        {
+            //Arrange
+            var userId = 1;
+            var discountAmount = 15;
+
+            var product = DefaultProduct();
+
+            var basePrice = DefaultBasePrice(false);
+
+            var expectedPrice = 0;
+
+            //Random 10AM datetime
+            string dateString = "2005-05-05 10:12 AM";
+            DateTime date = DateTime.ParseExact(dateString, "yyyy-MM-dd HH:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+
+            SetupAllRepositories(product.Id, userId, product, basePrice, discountAmount);
+
+            //Act
+            var actualResult = _productService!.GetProductPrice(product.Id, userId, date);
+
+            //Assert
+            Assert.AreEqual(expectedPrice, actualResult.Price, "Price should match.");
+        }
+
+        [TestMethod]
+        public void GetProductPrice_NullProduct_ShouldThrowException()
+        {
+            //Arrange
+            var productId = 1;
+            Product product = null;
+
+            SetupProductRepository(productId, product);
+
+            //Act
+            Action expectedAction = () => { throw new ArgumentException("Cannot find product with id: 1."); };
+            var expectedException = Assert.ThrowsException<ArgumentException>(expectedAction);
+
+            Action actualAction = () => _productService!.GetProductPrice(productId, 10, DateTime.UtcNow); ;
+            var actualException = Assert.ThrowsException<ArgumentException>(actualAction);
+
+            //Assert
+            Assert.AreEqual(expectedException.Message, actualException.Message);
+        }
+
+        [TestMethod]
+        public void GetProductPrice_NullBasePrice_ShouldThrowException()
+        {
+            //Arrange
+            var productId = 1;
+            Product product = DefaultProduct();
+            BasePrice basePrice = null;
+
+            SetupProductRepository(productId, product);
+            SetupPriceRepository(productId, basePrice);
+
+            //Act
+            Action expectedAction = () => { throw new ArgumentException("Cannot find price for product with id: 1."); };
+            var expectedException = Assert.ThrowsException<ArgumentException>(expectedAction);
+
+            Action actualAction = () => _productService!.GetProductPrice(productId, 10, DateTime.UtcNow);
+            var actualException = Assert.ThrowsException<ArgumentException>(actualAction);
+
+            //Assert
+            Assert.AreEqual(expectedException.Message, actualException.Message);
+        }
+
+        private Product DefaultProduct() =>
+            new Product()
+             {
+                 Id = 1,
+                 Name = "Banana",
+             };
+
+        private BasePrice DefaultBasePrice(bool IsFinal) =>
+            new BasePrice()
+            {
+                IsFinal = IsFinal,
+                Ammount = 10
+            };
+
+
+        private void SetupProductRepository(long productId, Product product) =>
+            _productRepository!.Setup(x => x.GetById(productId)).Returns(product);
+
+        private void SetupPriceRepository(long productId, BasePrice basePrice) =>
+            _priceRepository!.Setup(x => x.GetBasePrice(productId)).Returns(basePrice);
+
+        private void SetupAllRepositories(long productId, long userId, Product product, BasePrice basePrice, decimal discountAmount)
+        {
+            _productRepository!.Setup(x => x.GetById(productId)).Returns(product);
+            _priceRepository!.Setup(x => x.GetBasePrice(productId)).Returns(basePrice);
+            _discountRepository!.Setup(x => x.GetDiscountAmount(productId, userId)).Returns(discountAmount);
+        }
+
     }
 }
