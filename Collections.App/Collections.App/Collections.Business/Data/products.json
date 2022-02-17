@@ -1,0 +1,56 @@
+[
+  {
+    "Id": 1,
+    "Name": "Chicken Salad",
+    "Description": "Garlic flavoured chicken salad in a plastic container.",
+    "Picture": "https://st.depositphotos.com/1000504/4552/i/950/depositphotos_45522513-stock-photo-salad-in-a-plastic-take.jpg",
+    "Ingredients": [ "Chicken", "Garlic", "Apple", "Onion", "Celery" ],
+    "Price": 15.99,
+    "IsEnabled": true
+  },
+  {
+    "Id": 2,
+    "Name": "Casserole",
+    "Description": "Beef casserole.",
+    "Picture": "https://m.media-amazon.com/images/I/715RRC+4S4S._AC_SX466_.jpg",
+    "Ingredients": [ "Beef", "Garlic", "Beans", "Peas" ],
+    "Price": 22.35,
+    "IsEnabled": true
+  },
+  {
+    "Id": 3,
+    "Name": "Beans",
+    "Description": "Canned beans with tomato sauce.",
+    "Picture": "https://www.ubuy.com.tr/productimg/?image=aHR0cHM6Ly9tLm1lZGlhLWFtYXpvbi5jb20vaW1hZ2VzL0kvODFpNFFvYzQzUFMuX1NMMTUwMF8uanBn.jpg",
+    "Ingredients": [ "Beans", "Tomato sauce", "Salt" ],
+    "Price": 3,
+    "IsEnabled": true
+  },
+  {
+    "Id": 4,
+    "Name": "Chilli pepper",
+    "Description": "Fresh spicy hot chilli pepper.",
+    "Picture": "https://st.depositphotos.com/1000504/4552/i/950/depositphotos_45522513-stock-photo-salad-in-a-plastic-take.jpg",
+    "Ingredients": [ "Pepper", "Spicy" ],
+    "Price": 1.15,
+    "IsEnabled": true
+  },
+  {
+    "Id": 5,
+    "Name": "Frozen pepperoni pizza",
+    "Description": "Pre-made, pre-frozen, oven-ready pizza.",
+    "Picture": "https://img.money.com/2018/02/supreme-pizza.jpg?quality=60&w=1280",
+    "Ingredients": [ "Dough", "Tomato Sauce", "Pepperoni", "Mushrooms", "Cheese", "Black olives", "Green pepper" ],
+    "Price": 6.50,
+    "IsEnabled": false
+  },
+  {
+    "Id": 6,
+    "Name": "Green pepper",
+    "Description": "Fresh green pepper.",
+    "Picture": "https://st.depositphotos.com/1000504/4552/i/950/depositphotos_45522513-stock-photo-salad-in-a-plastic-take.jpg",
+    "Ingredients": [ "Pepper", "Green" ],
+    "Price": 1.85,
+    "IsEnabled": true
+  }
+]
