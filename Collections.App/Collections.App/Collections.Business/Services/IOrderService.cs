@@ -6,9 +6,9 @@ namespace Collections.Business.Services
     {
         public ICollection<Order> GetOrdersByProductName(string productName);
         public ICollection<Product> GetProductsFromOrderViaId(int orderId);
-        public ICollection<Product> GetProductsFromOrderViaDate(string dateTime);
+        public ICollection<Product> GetProductsFromOrderViaDate(DateTime dateTime);
         public ICollection<Product> GetSoldProductsFromLastMonth();
         public int GetAverageOrdersForLastMonth();
-        public int GetTotalOrdersAmountPerDayForLastMonth();
+        public IDictionary<string, int> GetTotalOrdersAmountPerDayForLastMonth();
     }
 }

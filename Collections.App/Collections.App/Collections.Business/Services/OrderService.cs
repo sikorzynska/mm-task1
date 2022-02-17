@@ -1,35 +1,31 @@
 ﻿using Collections.Business.Models;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace Collections.Business.Services
 {
     public class OrderService : IOrderService
     {
-        //Search by order number - select all matching products from that order
-        //Search sold products during a period(hour(s), day(s), month(s), and/or year(s)) - select all matching products ordered by date and time.Do not group the result.
-        //Search sold products for the last month - select all sold products for the period and show aggregated quantity and aggregated price for all sales.Group the result - every matching product should exist once into the result and for this product should show the total count and total price of sold products for the period. Keep in mind that the product price could be changed multiple times during the period.
-        //Search average orders amount for the last month
-        //Search total orders amount per day for the last month
-
-        private IReadOnlyCollection<Order> orders;
+        private IReadOnlyCollection<Order> _orders;
         public OrderService(string jsonPath)
         {
             string ordersJson = File.ReadAllText(jsonPath);
-            this.orders = JsonConvert.DeserializeObject<Order[]>(ordersJson);
-        }
-        public int GetAverageOrdersForLastMonth()
-        {
-            throw new NotImplementedException();
+            this._orders = JsonConvert.DeserializeObject<Order[]>(ordersJson);
         }
 
         public ICollection<Order> GetOrdersByProductName(string productName) =>
-            orders.Where(x => x.Products.Any(op => op.Product.Name.ToLower().Contains(productName.ToLower())))
+            _orders.Where(x => x.Products.Any(op => op.Product.Name.ToLower().Contains(productName.ToLower())))
             .ToList();
 
-        public ICollection<Product> GetProductsFromOrderViaDate(string dateTime)
+        public ICollection<Product> GetProductsFromOrderViaDate(DateTime dateTime)
         {
-            DateTime date = DateTime.TryParse(dateTime, out DateTime d) ? DateTime.Parse(dateTime) : DateTime.UtcNow;
-            var resultOrders = this.orders.Where(o => o.DateTime.Date == date.Date).Select(v => v.Products).ToList();
+            var test = _orders
+                .Where(o => o.DateTime.Date == dateTime.Date)
+                .Select(v => v.Products)
+                .Select(x => x.Select(x => x.Product))
+                .ToList();
+
+            var resultOrders = this._orders.Where(o => o.DateTime.Date == dateTime.Date ).Select(v => v.Products).ToList();
             var resultProducts = new List<Product>();
 
             foreach (var orderProduct in resultOrders)
@@ -43,9 +39,21 @@ namespace Collections.Business.Services
             return resultProducts;
         }
 
+        public int GetAverageOrdersForLastMonth()
+        {
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.AddMonths(-1).Month;
+            int day = DateTime.Now.Day;
+            DateTime date = new DateTime(year, month, day);
+
+            int lastMonthTotalOrders = _orders.Count(o => o.DateTime.Year == date.Year && o.DateTime.Month == date.Month);
+
+            return lastMonthTotalOrders;
+        }
+
         public ICollection<Product> GetProductsFromOrderViaId(int orderId)
         {
-            var order = orders.FirstOrDefault(o => o.Id == orderId);
+            var order = _orders.FirstOrDefault(o => o.Id == orderId);
 
             var products = new List<Product>();
 
@@ -59,12 +67,49 @@ namespace Collections.Business.Services
 
         public ICollection<Product> GetSoldProductsFromLastMonth()
         {
-            throw new NotImplementedException();
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.AddMonths(-1).Month;
+            int day = DateTime.Now.Day;
+            DateTime date = new DateTime(year, month, day);
+
+            var resultOrders = _orders.Where(o => o.DateTime.Year == date.Year && o.DateTime.Month == date.Month)
+                .Select(x => x.Products)
+                .ToList();
+            var resultProducts = new List<Product>();
+
+            foreach (var op in resultOrders)
+            {
+                foreach (var product in op)
+                {
+                    resultProducts.Add(product.Product);
+                }
+            }
+
+            return resultProducts;
+
         }
 
-        public int GetTotalOrdersAmountPerDayForLastMonth()
+        public IDictionary<string, int> GetTotalOrdersAmountPerDayForLastMonth()
         {
-            throw new NotImplementedException();
+            var dates = GetDatesFromLastMonth();
+
+            var dict = new Dictionary<string, int>();
+            foreach (var date in dates)
+            {
+                var totalOrdersForDay = _orders.Count(o => o.DateTime.Date == date.Date);
+                dict.Add(date.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture), totalOrdersForDay);
+            }
+
+            return dict;
+        }
+
+        public static List<DateTime> GetDatesFromLastMonth()
+        {
+            int lastMonth = DateTime.Now.AddMonths(-1).Month;
+            int year = DateTime.Now.Year;
+            return Enumerable.Range(1, DateTime.DaysInMonth(year, lastMonth))
+                             .Select(day => new DateTime(year, lastMonth, day))
+                             .ToList();
         }
     }
 }
