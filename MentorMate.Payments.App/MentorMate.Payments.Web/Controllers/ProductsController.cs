@@ -8,11 +8,13 @@ namespace MentorMate.Payments.Web.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
+        const string jsonPath = "../MentorMate.Payment.Business/Datasets/products.json";
+
         [HttpGet(Name = "GetProducts")]
         public IEnumerable<Product> Get()
         {
-            IProductService productService = new ProductService();
-            var products = productService.GetProducts();
+            IProductService _service = new ProductService(jsonPath);
+            var products = _service.GetProducts();
             return products.ToArray();
         }
     }

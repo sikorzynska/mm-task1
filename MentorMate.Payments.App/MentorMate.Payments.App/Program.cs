@@ -1,23 +1,15 @@
 ﻿using MentorMate.Payment.Business.Models;
 using MentorMate.Payment.Business.Services;
 using MentorMate.Payment.Business.Providers;
-using System.Text;
 
-IProductService productService = new ProductService();
-var products = productService.GetProducts(true);
+const string jsonPath = "../../../../MentorMate.Payment.Business/Datasets/products.json";
+
+IProductService _service = new ProductService(jsonPath);
+var products = _service.GetProducts();
 
 foreach (var product in products)
 {
-    var sb = new StringBuilder();
-
-    sb.AppendLine(string.Empty);
-    sb.AppendLine($"Id: {product.Id}");
-    sb.AppendLine($"Name: {product.Name}");
-    sb.AppendLine($"Description: {product.Description}");
-    sb.AppendLine($"Price: {product.Price}");
-    sb.AppendLine(string.Empty);
-
-    Console.WriteLine(sb.ToString());
+    Console.WriteLine(product.ToString());
 }
 
 Console.WriteLine("Please type the ID of the product that you would like to purchase.");
@@ -49,20 +41,20 @@ while (true)
 {
     var paymentInput = Console.ReadLine();
 
-    if(String.IsNullOrEmpty(paymentInput) || paymentInput != "1" && paymentInput != "2")
+    if(String.IsNullOrEmpty(paymentInput) || !int.TryParse(paymentInput, out int n) || int.Parse(paymentInput) != 1 && int.Parse(paymentInput) != 2)
     {
         Console.WriteLine("Invalid payment provider, please try again.");
     }
     else
     {
-        switch (paymentInput)
+        switch (int.Parse(paymentInput))
         {
-            case "1":
+            case 1:
                 {
                     paymentProvider = new PayPalPaymentProvider();
                     break;
                 }
-            case "2":
+            case 2:
             {
                 paymentProvider = new StripePaymentProvider();
                 break;

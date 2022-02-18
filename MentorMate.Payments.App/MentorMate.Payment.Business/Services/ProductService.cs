@@ -5,13 +5,12 @@ namespace MentorMate.Payment.Business.Services
 {
     public class ProductService : IProductService
     {
-        public ICollection<Product> GetProducts(bool fromApp = false)
+        private readonly string jsonPath = string.Empty;
+        public ProductService(string jsonPath) =>
+            this.jsonPath = jsonPath;
+        public ICollection<Product> GetProducts()
         {
-            string productsJson = 
-                !fromApp 
-                ? File.ReadAllText("../MentorMate.Payment.Business/Datasets/products.json")
-                : File.ReadAllText("../../../../MentorMate.Payment.Business/Datasets/products.json");
-
+            string productsJson = File.ReadAllText(jsonPath);
             var products = JsonConvert.DeserializeObject<Product[]>(productsJson);
 
             return products;
