@@ -23,10 +23,6 @@ namespace Mentormate.UnitTestsTask.Tests.Services
             _discountRepository = new Mock<IDiscountRepository>();
 
             _productService = new ProductService(_productRepository.Object, _priceRepository.Object, _discountRepository.Object);
-
-            _productRepository.Setup(x => x.GetById(It.IsAny<long>())).Returns(new Product());
-            _priceRepository.Setup(x => x.GetBasePrice(It.IsAny<long>())).Returns(new BasePrice());
-            _discountRepository.Setup(x => x.GetDiscountAmount(It.IsAny<long>(), It.IsAny<long>())).Returns(new decimal());
         }
 
         [TestMethod]
