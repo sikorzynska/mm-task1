@@ -7,6 +7,6 @@ namespace MentorMate.Restaurant.Data.Entities
     {
         [Required]
         public string? Name { get; set; }
-        public ICollection<Table> Tables { get; set; } = new List<Table>();
+        public ICollection<Table>? Tables { get; set; } = new List<Table>();
     }
 }

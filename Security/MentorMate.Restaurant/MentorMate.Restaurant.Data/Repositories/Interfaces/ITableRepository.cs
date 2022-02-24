@@ -1,6 +1,6 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
 
-namespace MentorMate.Restaurant.Data.Repositories.Interfaces.Interfaces
+namespace MentorMate.Restaurant.Data.Repositories.Interfaces
 {
     public interface ITableRepository
     {

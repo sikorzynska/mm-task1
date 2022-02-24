@@ -1,14 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Data.Misc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Data
 {
     public class DbInitializer
     {
         private readonly RestaurantDbContext _dbContext;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<User> _userManager;
 
-        public DbInitializer(RestaurantDbContext dbContext)
+        public DbInitializer(RestaurantDbContext dbContext,
+            UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _dbContext = dbContext;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task InitializeAsync()
@@ -29,9 +38,41 @@ namespace MentorMate.Restaurant.Data
 
         private async Task SeedAsync()
         {
-            //await SeedUsersAsync();
-            //await SeedProductsAsync();
-            //await SeedTablesAsync();
+            await SeedRolesAsync();
+            await SeedUsersAsync();
+            await SeedProductsAsync();
+            await SeedTablesAsync();
+        }
+        
+        private async Task SeedRolesAsync()
+        {
+            if(await _dbContext.Roles.AnyAsync())
+            {
+                return;
+            }
+
+            var roles = new List<IdentityRole> 
+            { 
+                new IdentityRole
+                {
+                    Name = UserRoles.Admin
+                },
+                new IdentityRole
+                {
+                    Name = UserRoles.Manager
+                },
+                new IdentityRole
+                {
+                    Name = UserRoles.Waiter
+                },
+            };
+
+            foreach (var role in roles)
+            {
+                await _roleManager.CreateAsync(role);
+            }
+
+            await _dbContext.SaveChangesAsync();
         }
 
         private async Task SeedUsersAsync()
@@ -41,7 +82,17 @@ namespace MentorMate.Restaurant.Data
                 return;
             }
 
-            //todo: implement logic
+            var adminUser = new User
+            {
+                Name = "Owner",
+                Email = "admin@mentormate.com",
+                UserName = "Admin",
+            };
+
+            await _userManager.CreateAsync(adminUser, "Admin123!");
+            await _userManager.AddToRoleAsync(adminUser, UserRoles.Admin);
+
+            await _dbContext.SaveChangesAsync();
         }
 
         private async Task SeedProductsAsync()
@@ -51,7 +102,9 @@ namespace MentorMate.Restaurant.Data
                 return;
             }
 
-            //todo: implement logic
+            var products = FoodMenu.GetProducts();
+
+            await _dbContext.Products.AddRangeAsync(products);
         }
 
         private async Task SeedTablesAsync()
@@ -61,7 +114,16 @@ namespace MentorMate.Restaurant.Data
                 return;
             }
 
-            //todo: implement logic
+            var tables = new List<Table>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                tables.Add(new Table());
+            }
+
+            await _dbContext.Tables.AddRangeAsync(tables);
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

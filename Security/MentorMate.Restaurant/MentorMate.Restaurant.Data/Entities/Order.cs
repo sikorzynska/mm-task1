@@ -6,12 +6,13 @@ namespace MentorMate.Restaurant.Data.Entities
     {
         [Key]
         public int Id { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime DateTime { get; set; } = DateTime.Now;
         public ICollection<Product> Products { get; set; } = new List<Product>();
         public int TableId { get; set; }
         public Table? Table { get; set; }
         public decimal TotalPrice => Products.Select(p => p.Price).Sum();
-        public bool IsPaid { get; set; }
+        public bool IsActive { get; set; } = true;
+        public bool IsServed { get; set; } = false;
 
     }
 }
