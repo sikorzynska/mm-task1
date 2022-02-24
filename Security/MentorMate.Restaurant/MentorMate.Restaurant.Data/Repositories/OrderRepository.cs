@@ -13,6 +13,15 @@ namespace MentorMate.Restaurant.Data.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        //Get all
+        public async Task<IEnumerable<Order>> GetAllAsync() =>
+            await _dbContext.Orders.OrderBy(o => o.TableId).ToListAsync();
+
+        //Get by id
+        public async Task<Order> GetByIdAsync(int id) =>
+            await _dbContext.Orders.FirstOrDefaultAsync(o => o.Id == id);
+
+        //Add
         public async Task AddAsync(Order order)
         {
             await _dbContext.Orders.AddAsync(order);
@@ -20,32 +29,18 @@ namespace MentorMate.Restaurant.Data.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task CancelAsync(Order order)
+        //Update
+        public async Task UpdateAsync(Order order)
         {
-            _dbContext.Orders.Remove(order);
+            _dbContext.Orders.Update(order);
 
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetAllAsync() =>
-            await _dbContext.Orders.OrderBy(o => o.TableId).ToArrayAsync();
-
-        public async Task<IEnumerable<Order>> GetAllByTableIdAsync(int tableId) =>
-            await _dbContext.Orders.Where(o => o.TableId == tableId).ToListAsync();
-
-        public async Task<Order> GetByIdAsync(int id) =>
-            await _dbContext.Orders.FirstOrDefaultAsync(o => o.Id == id);
-
-        public async Task ServeAsync(Order order)
+        //Delete
+        public async Task DeleteAsync(Order order)
         {
-            var table = await _dbContext.Tables.FirstOrDefaultAsync(t => t.Id == order.TableId);
-
-            table.Bill += order.TotalPrice;
-        }
-
-        public async Task UpdateAsync(Order order)
-        {
-            _dbContext.Orders.Update(order);
+            _dbContext.Orders.Remove(order);
 
             await _dbContext.SaveChangesAsync();
         }

@@ -1,4 +1,5 @@
-﻿using MentorMate.Restaurant.Data.Entities;
+﻿using MentorMate.Restaurant.Data.Configurations;
+using MentorMate.Restaurant.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

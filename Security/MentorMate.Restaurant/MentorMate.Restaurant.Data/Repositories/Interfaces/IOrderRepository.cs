@@ -1,15 +1,13 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
 
-namespace MentorMate.Restaurant.Data.Repositories
+namespace MentorMate.Restaurant.Data.Repositories.Interfaces
 {
     public interface IOrderRepository
     {
         Task<IEnumerable<Order>> GetAllAsync();
-        Task<IEnumerable<Order>> GetAllByTableIdAsync(int tableId);
         Task<Order> GetByIdAsync(int id);
         Task AddAsync(Order order);
-        Task ServeAsync(Order order);
-        Task CancelAsync(Order order);
+        Task DeleteAsync(Order order);
         Task UpdateAsync(Order order);
     }
 }

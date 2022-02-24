@@ -13,6 +13,15 @@ namespace MentorMate.Restaurant.Data.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        //Get all
+        public async Task<IEnumerable<Product>> GetAllAsync() =>
+            await _dbContext.Products.ToListAsync();
+
+        //Get by id
+        public async Task<Product> GetByIdAsync(int id) =>
+            await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+
+        //Add
         public async Task AddAsync(Product product)
         {
             await _dbContext.Products.AddAsync(product);
@@ -20,25 +29,18 @@ namespace MentorMate.Restaurant.Data.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Product product)
+        //Update
+        public async Task UpdateAsync(Product product)
         {
-            _dbContext.Remove(product);
+            _dbContext.Products.Update(product);
 
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync() =>
-            await _dbContext.Products.ToListAsync();
-
-        public async Task<Product> GetByIdAsync(int id) =>
-            await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
-
-        public async Task<Product> GetByNameAsync(string name) =>
-            await _dbContext.Products.FirstOrDefaultAsync(x => x.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
-
-        public async Task UpdateAsync(Product product)
+        //Delete
+        public async Task DeleteAsync(Product product)
         {
-            _dbContext.Products.Update(product);
+            _dbContext.Remove(product);
 
             await _dbContext.SaveChangesAsync();
         }
