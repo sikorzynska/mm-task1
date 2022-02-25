@@ -6,8 +6,8 @@ namespace MentorMate.Restaurant.Business.Models
     {
         [Required]
         public string Name { get; set; }
-        [Range(1, 2)]
-        public int ProductType { get; set; }
+        [Range(1, 5)]
+        public int CategoryId { get; set; }
         public decimal Price { get; set; }
 
     }

@@ -9,6 +9,11 @@ namespace MentorMate.Restaurant.Data.Configurations
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.ToTable("Products");
+
+            //one-to-many relationship
+            builder.HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(x => x.CategoryId);
         }
     }
 }

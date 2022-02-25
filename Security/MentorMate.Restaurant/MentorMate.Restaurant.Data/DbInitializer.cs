@@ -38,10 +38,11 @@ namespace MentorMate.Restaurant.Data
 
         private async Task SeedAsync()
         {
-            await SeedRolesAsync();
-            await SeedUsersAsync();
+            await SeedCategoriesAsync();
             await SeedProductsAsync();
             await SeedTablesAsync();
+            await SeedRolesAsync();
+            await SeedUsersAsync();
         }
         
         private async Task SeedRolesAsync()
@@ -56,10 +57,6 @@ namespace MentorMate.Restaurant.Data
                 new IdentityRole
                 {
                     Name = UserRoles.Admin
-                },
-                new IdentityRole
-                {
-                    Name = UserRoles.Manager
                 },
                 new IdentityRole
                 {
@@ -93,6 +90,18 @@ namespace MentorMate.Restaurant.Data
             await _userManager.AddToRoleAsync(adminUser, UserRoles.Admin);
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        private async Task SeedCategoriesAsync()
+        {
+            if (await _dbContext.Categories.AnyAsync())
+            {
+                return;
+            }
+
+            var categories = FoodCategories.GetCategories();
+
+            await _dbContext.Categories.AddRangeAsync(categories);
         }
 
         private async Task SeedProductsAsync()

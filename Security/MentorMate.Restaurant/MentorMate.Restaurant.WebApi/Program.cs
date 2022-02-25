@@ -1,10 +1,10 @@
 using MentorMate.Restaurant.Business.Services;
 using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data;
-using MentorMate.Restaurant.Data.Configurations.Auth;
 using MentorMate.Restaurant.Data.Entities;
 using MentorMate.Restaurant.Data.Repositories;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
+using MentorMate.Restaurant.WebApi.Configurations.Auth;
 using MentorMate.Restaurant.WebApi.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -100,6 +100,7 @@ using (app)
 
     app.UseHttpsRedirection();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();

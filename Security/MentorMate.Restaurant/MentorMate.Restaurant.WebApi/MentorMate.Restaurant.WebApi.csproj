@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MentorMate.Restaurant.Business\MentorMate.Restaurant.Business.csproj" />
+    <ProjectReference Include="..\MentorMate.Restaurant.Domain\MentorMate.Restaurant.Domain.csproj" />
   </ItemGroup>
 
 </Project>

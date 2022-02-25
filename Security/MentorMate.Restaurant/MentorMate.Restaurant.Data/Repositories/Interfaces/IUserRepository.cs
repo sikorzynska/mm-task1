@@ -5,7 +5,10 @@ namespace MentorMate.Restaurant.Data.Repositories.Interfaces
     public interface IUserRepository
     {
         Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByNameAsync(string name);
+        Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);
+        Task AddUserAsync(User user, string password, string role);
+        Task DeleteUserAsync(User user);
+        Task UpdateUserAsync(User user);
     }
 }

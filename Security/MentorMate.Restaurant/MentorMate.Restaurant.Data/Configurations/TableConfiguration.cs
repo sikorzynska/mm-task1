@@ -15,6 +15,7 @@ namespace MentorMate.Restaurant.Data.Configurations
                 .WithMany(w => w.Tables)
                 .HasForeignKey(x => x.WaiterId);
 
+            //many-to-one relationship
             builder.HasMany(t => t.Orders)
                 .WithOne(t => t.Table)
                 .HasForeignKey(x => x.TableId);

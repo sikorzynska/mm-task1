@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace MentorMate.Restaurant.Data.Configurations.Auth
+namespace MentorMate.Restaurant.WebApi.Configurations.Auth
 {
     public class AuthOptions
     {

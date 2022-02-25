@@ -1,7 +1,6 @@
 ﻿using MentorMate.Restaurant.Business.Models;
 using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Entities;
-using MentorMate.Restaurant.Data.Entities.Enums;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
 
 namespace MentorMate.Restaurant.Business.Services
@@ -26,7 +25,7 @@ namespace MentorMate.Restaurant.Business.Services
             var product = new Product
             {
                 Name = model.Name,
-                Type = (ProductType)model.ProductType,
+                CategoryId = model.CategoryId,
                 Price = model.Price,
             };
 
@@ -43,7 +42,7 @@ namespace MentorMate.Restaurant.Business.Services
             }
 
             existingProduct.Name = model.Name;
-            existingProduct.Type = (ProductType)model.ProductType;
+            existingProduct.CategoryId = model.CategoryId;
             existingProduct.Price = model.Price;
 
             await _productRepository.UpdateAsync(existingProduct);
