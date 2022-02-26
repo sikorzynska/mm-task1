@@ -1,5 +1,4 @@
-﻿using MentorMate.Restaurant.Data.Configurations.Auth;
-using MentorMate.Restaurant.Data.Entities;
+﻿using MentorMate.Restaurant.Data.Entities;
 using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.Auth;
 using MentorMate.Restaurant.WebApi.Configurations.Auth;
@@ -35,13 +34,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                return BadRequest(new AuthorizeErrorResponse(Errors.LoginError));
+                return BadRequest(new AuthorizeErrorResponse(Messages.LoginErrorMessage));
             }
 
             var signInResult = await _signInManager.PasswordSignInAsync(user, request.Password, false, false);
             if (!signInResult.Succeeded)
             {
-                return BadRequest(new AuthorizeErrorResponse(Errors.LoginError));
+                return BadRequest(new AuthorizeErrorResponse(Messages.LoginErrorMessage));
             }
 
             var response = new AuthorizeResponse

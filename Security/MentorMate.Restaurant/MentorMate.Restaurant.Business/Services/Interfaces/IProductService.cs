@@ -1,5 +1,5 @@
-﻿using MentorMate.Restaurant.Business.Models;
-using MentorMate.Restaurant.Data.Entities;
+﻿using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Domain.Models.Products;
 
 namespace MentorMate.Restaurant.Business.Services.Interfaces
 {

@@ -1,46 +1,45 @@
-﻿using MentorMate.Restaurant.Data.Entities;
+﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Domain.Models.Users;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace MentorMate.Restaurant.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
+        private readonly IUserService _userService;
 
-        public UsersController(
-            UserManager<User> userManager)
+        public UsersController(IUserService userService)
         {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        [HttpGet()]
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var users = await _userManager.Users.Where(u => u.Id != currentUserId).ToListAsync();
+            var users = await _userService.GetAllAsync();
+            var result = users.Where(u => u.Id != currentUserId).ToList();
 
             if(!users.Any())
             {
                 return NotFound();
             }
 
-            return Ok(users);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserById([FromRoute] string id)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _userService.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -50,12 +49,12 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(user);
         }
 
-        [HttpGet()]
-        //[Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetCurrentUser()
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == currentUserId);
+            var user = await _userService.GetByIdAsync(currentUserId);
 
             if (user == null)
             {
@@ -66,12 +65,22 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserModel model)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateUser([FromBody] AddUserModel model)
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
+
+            var response = await _userService.AddUserAsync(model);
+
+            if(!response.Result)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
         }
     }
 }

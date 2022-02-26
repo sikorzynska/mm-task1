@@ -1,7 +1,7 @@
-﻿using MentorMate.Restaurant.Business.Models;
-using MentorMate.Restaurant.Business.Services.Interfaces;
+﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Entities;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
+using MentorMate.Restaurant.Domain.Models.Orders;
 
 namespace MentorMate.Restaurant.Business.Services
 {

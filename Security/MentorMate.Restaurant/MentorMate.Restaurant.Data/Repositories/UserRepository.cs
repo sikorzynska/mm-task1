@@ -42,8 +42,23 @@ namespace MentorMate.Restaurant.Data.Repositories
             
 
         //Update
-        public async Task UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(User user, string password = null, string role = null)
         {
+            if(password != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                await _userManager.ResetPasswordAsync(user, token, password);
+            }
+
+            if(role != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, roles);
+
+                await _userManager.AddToRoleAsync(user, role);
+            }
+
             await _userManager.UpdateAsync(user);
 
             await _dbContext.SaveChangesAsync();
@@ -55,6 +70,13 @@ namespace MentorMate.Restaurant.Data.Repositories
             await _userManager.DeleteAsync(user);
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<string> GetRoleAsync(User user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return roles.FirstOrDefault();
         }
     }
 }

@@ -8,8 +8,8 @@ namespace MentorMate.Restaurant.Business.Services.Interfaces
         Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);
-        Task<bool> AddUserAsync(UserModel model);
-        Task<bool> DeleteUserAsync(UserModel model);
-        Task<bool> UpdateUserAsync(string id, UserModel model);
+        Task<UserResponse> AddUserAsync(AddUserModel model);
+        Task<UserResponse> DeleteUserAsync(string id);
+        Task<UserResponse> UpdateUserAsync(string id, UpdateUserModel model);
     }
 }

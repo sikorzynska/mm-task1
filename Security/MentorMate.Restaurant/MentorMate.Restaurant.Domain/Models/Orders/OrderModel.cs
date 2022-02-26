@@ -1,4 +1,4 @@
-﻿namespace MentorMate.Restaurant.Business.Models
+﻿namespace MentorMate.Restaurant.Domain.Models.Orders
 {
     public class OrderModel
     {

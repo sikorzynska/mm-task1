@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MentorMate.Restaurant.Business.Models
+namespace MentorMate.Restaurant.Domain.Models.Products
 {
     public class ProductModel
     {
