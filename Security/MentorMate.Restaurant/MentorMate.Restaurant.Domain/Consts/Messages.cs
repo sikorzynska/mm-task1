@@ -21,6 +21,9 @@ namespace MentorMate.Restaurant.Domain.Consts
         //Name
         public const string NameRequiredMessage = "Name is required";
         public const string NameLengthMessage = "Name must not exceed 100 characters";
+        //Username
+        public const string UsernameRequiredMessage = "Username is required";
+        public const string UsernameLengthMessage = "Username must not exceed 100 characters";
         //Email
         public const string EmailRequiredMessage = "Email is required";
         public const string EmailLengthMessage = "Email must not exceed 255 characters";

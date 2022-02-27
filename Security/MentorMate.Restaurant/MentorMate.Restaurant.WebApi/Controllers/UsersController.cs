@@ -35,11 +35,11 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{userId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetUserById([FromRoute] string id)
+        public async Task<IActionResult> GetUserById([FromRoute] string userId)
         {
-            var user = await _userService.GetByIdAsync(id);
+            var user = await _userService.GetByIdAsync(userId);
 
             if (user == null)
             {
@@ -64,9 +64,9 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateUser([FromBody] AddUserModel model)
+        public async Task<IActionResult> CreateUser([FromForm] AddUserModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -78,6 +78,39 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             if(!response.Result)
             {
                 return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPatch]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _userService.UpdateUserAsync(model);
+
+            if (!response.Result)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpDelete("{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string userId)
+        {
+            var response = await _userService.DeleteUserAsync(userId);
+
+            if (!response.Result)
+            {
+                return NotFound(response);
             }
 
             return Ok(response);

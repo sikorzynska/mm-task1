@@ -5,9 +5,9 @@ namespace MentorMate.Restaurant.Domain.Models.Users
 {
     public class AddUserModel
     {
-        [Required(ErrorMessage = Messages.NameRequiredMessage)]
-        [MaxLength(100, ErrorMessage = Messages.NameLengthMessage)]
-        public string Name { get; set; }
+        [Required(ErrorMessage = Messages.UsernameRequiredMessage)]
+        [MaxLength(100, ErrorMessage = Messages.UsernameLengthMessage)]
+        public string Username { get; set; }
 
         [Required(ErrorMessage = Messages.EmailRequiredMessage)]
         [MaxLength(255, ErrorMessage = Messages.EmailLengthMessage)]

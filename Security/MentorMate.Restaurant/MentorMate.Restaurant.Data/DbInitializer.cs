@@ -81,9 +81,8 @@ namespace MentorMate.Restaurant.Data
 
             var adminUser = new User
             {
-                Name = "Owner",
-                Email = "admin@mentormate.com",
-                UserName = "Admin",
+                Email = "admin@abv.bg",
+                UserName = "admin123",
             };
 
             await _userManager.CreateAsync(adminUser, "Admin123!");

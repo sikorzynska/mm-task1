@@ -4,20 +4,26 @@ namespace MentorMate.Restaurant.Domain.Models.Users
 {
     public class UserResponse
     {
+        public UserResponse()
+        {
+        }
+        public UserResponse(bool result, string message)
+        {
+            Result = result;
+            Message = message;
+        }
+        public UserResponse(bool result, string message, GeneralUserModel model)
+        {
+            Result = result;
+            Message = message;
+            User = model;
+        }
+
         [JsonPropertyName("result")]
         public bool Result { get; set; }
         [JsonPropertyName("message")]
-        public string? ResultMessage { get; set; }
-        [JsonPropertyName("name")]
-        public string? Name { get; set; }
-
-        [JsonPropertyName("email")]
-        public string? Email { get; set; }
-
-        [JsonPropertyName("role")]
-        public string? Role { get; set; }
-
-        [JsonPropertyName("password")]
-        public string Password { get; set; }
+        public string? Message { get; set; }
+        [JsonPropertyName("user")]
+        public GeneralUserModel? User { get; set; }
     }
 }

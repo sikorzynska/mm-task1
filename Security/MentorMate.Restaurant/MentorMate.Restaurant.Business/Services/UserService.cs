@@ -19,36 +19,38 @@ namespace MentorMate.Restaurant.Business.Services
         public async Task<UserResponse> AddUserAsync(AddUserModel model)
         {
             var result = new UserResponse();
+
             if(await EmailIsTaken(model.Email))
             {
-                result.Result = false;
-                result.ResultMessage = Messages.EmailTakenMessage;
+                result = new UserResponse(false, Messages.EmailTakenMessage);
 
                 return result;
             }
 
             if(!RoleIsValid(model.Role))
             {
-                result.Result = false;
-                result.ResultMessage = Messages.RoleInvalidMessage;
+                result = new UserResponse(false, Messages.RoleInvalidMessage);
 
                 return result;
             }
 
             var user = new User
             {
-                Name = model.Name,
+                UserName = model.Username,
                 Email = model.Email,
             };
 
             await _userRepository.AddUserAsync(user, model.Password, model.Role);
 
-            result.Result = true;
-            result.ResultMessage = Messages.UserCreatedMessage;
-            result.Name = model.Name;
-            result.Email = model.Email;
-            result.Role = model.Role;
-            result.Password = model.Password;
+            result = new UserResponse(
+                true,
+                Messages.UserCreatedMessage,
+                new GeneralUserModel
+                {
+                    Username = model.Username,
+                    Email = model.Email,
+                    Role = model.Role,
+                });
 
             return result;
         }
@@ -60,70 +62,131 @@ namespace MentorMate.Restaurant.Business.Services
 
             if(user == null)
             {
-                result.Result = false;
-                result.ResultMessage = Messages.UserNotFoundMessage;
+                result = new UserResponse(false, Messages.UserNotFoundMessage);
 
                 return result;
             }
 
-            await _userRepository.DeleteUserAsync(user);
+            var userRole = await _userRepository.GetRoleAsync(user);
 
             result.Result = true;
-            result.ResultMessage = Messages.UserDeletedMessage;
+            result.Message = Messages.UserDeletedMessage;
+
+            result = new UserResponse(
+                true,
+                Messages.UserDeletedMessage,
+                new GeneralUserModel
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    Role = userRole
+                });
+
+            await _userRepository.DeleteUserAsync(user);
 
             return result;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync() =>
-            await _userRepository.GetAllAsync();
+        public async Task<IEnumerable<GeneralUserModel>> GetAllAsync() 
+        {
+            var users = await _userRepository.GetAllAsync();
 
-        public async Task<User> GetByEmailAsync(string email) =>
-            await _userRepository.GetByEmailAsync(email);
+            var result = users.Select(u => new GeneralUserModel
+            {
+                Id = u.Id,
+                Username= u.UserName,
+                Email= u.Email,
+                Role = _userRepository.GetRoleAsync(u).Result,
+            }).ToList();
 
-        public async Task<User> GetByIdAsync(string id) =>
-            await _userRepository.GetByIdAsync(id);
+            return result;
+        }
 
-        public async Task<UserResponse> UpdateUserAsync(string id, UpdateUserModel model)
+        public async Task<GeneralUserModel> GetByEmailAsync(string email) 
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            if(user == null)
+            {
+                return null;
+            }
+
+            var result = new GeneralUserModel
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                Role = _userRepository.GetRoleAsync(user).Result
+            };
+
+            return result;
+        }
+
+        public async Task<GeneralUserModel> GetByIdAsync(string id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if(user == null)
+            {
+                return null;
+            }
+
+            var result = new GeneralUserModel
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                Role = _userRepository.GetRoleAsync(user).Result
+            };
+
+            return result;
+        }
+
+        public async Task<UserResponse> UpdateUserAsync(UpdateUserModel model)
         {
             var result = new UserResponse();
 
-            var existingUser = await _userRepository.GetByIdAsync(id);
+            var existingUser = await _userRepository.GetByIdAsync(model.Id);
 
             if(existingUser == null)
             {
-                result.Result = false;
-                result.ResultMessage = Messages.UserNotFoundMessage;
+                result = new UserResponse(false, Messages.UserNotFoundMessage);
 
                 return result;
             }
 
             if(!string.IsNullOrEmpty(model.Email) && await EmailIsTaken(model.Email))
             {
-                result.Result = false;
-                result.ResultMessage = Messages.EmailTakenMessage;
+                result = new UserResponse(false, Messages.EmailTakenMessage);
 
                 return result;
             }
 
             if (!string.IsNullOrEmpty(model.Role) && !RoleIsValid(model.Role))
             {
-                result.Result = false;
-                result.ResultMessage = Messages.RoleInvalidMessage;
+                result = new UserResponse(false, Messages.RoleInvalidMessage);
 
                 return result;
             }
 
-            existingUser.Name = model.Name ?? model.Name;
-            existingUser.Email = model.Email ?? model.Email;
+            existingUser.UserName = model.Username ?? existingUser.UserName;
+            existingUser.Email = model.Email ?? existingUser.Email;
 
             await _userRepository.UpdateUserAsync(existingUser, model.Password ?? null, model.Role ?? null);
 
-            result.Result = true;
-            result.ResultMessage = Messages.UserUpdatedMessage;
-            result.Name = existingUser.Name;
-            result.Email = existingUser.Email;
-            result.Role = await _userRepository.GetRoleAsync(existingUser);
-            result.Password = model.Password ?? null;
+            var userRole = await _userRepository.GetRoleAsync(existingUser);
+
+            result = new UserResponse(
+                true,
+                Messages.UserUpdatedMessage,
+                new GeneralUserModel
+                {
+                    Id = model.Id,
+                    Username = existingUser.UserName,
+                    Email = existingUser.Email,
+                    Role = userRole,
+                });
 
             return result;
         }

@@ -1,4 +1,5 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Data.Misc;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,7 @@ namespace MentorMate.Restaurant.Data.Repositories
         //Update
         public async Task UpdateUserAsync(User user, string password = null, string role = null)
         {
-            if(password != null)
+            if (password != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 

@@ -5,11 +5,11 @@ namespace MentorMate.Restaurant.Business.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByIdAsync(string id);
-        Task<User> GetByEmailAsync(string email);
+        Task<IEnumerable<GeneralUserModel>> GetAllAsync();
+        Task<GeneralUserModel> GetByIdAsync(string id);
+        Task<GeneralUserModel> GetByEmailAsync(string email);
         Task<UserResponse> AddUserAsync(AddUserModel model);
         Task<UserResponse> DeleteUserAsync(string id);
-        Task<UserResponse> UpdateUserAsync(string id, UpdateUserModel model);
+        Task<UserResponse> UpdateUserAsync(UpdateUserModel model);
     }
 }

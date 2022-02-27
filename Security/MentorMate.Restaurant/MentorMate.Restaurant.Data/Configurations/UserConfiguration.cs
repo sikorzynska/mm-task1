@@ -10,10 +10,6 @@ namespace MentorMate.Restaurant.Data.Configurations
         {
             builder.ToTable("Users");
 
-            // unique values
-            builder.HasIndex(u => u.Name)
-                .IsUnique();
-
             // many-to-one relationship
             builder.HasMany(u => u.Tables)
                 .WithOne(t => t.Waiter);

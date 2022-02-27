@@ -29,7 +29,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AuthorizeAsync([FromBody] AuthorizeRequest request)
+        public async Task<IActionResult> AuthorizeAsync([FromForm] AuthorizeRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
