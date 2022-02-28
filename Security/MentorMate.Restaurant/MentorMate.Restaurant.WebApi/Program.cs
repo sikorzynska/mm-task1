@@ -31,6 +31,9 @@ builder.Services.AddDbContext<RestaurantDbContext>(options => options
 
 builder.Services.AddScoped<DbInitializer>();
 
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 

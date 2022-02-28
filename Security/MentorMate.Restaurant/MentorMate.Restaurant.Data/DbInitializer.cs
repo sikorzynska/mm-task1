@@ -81,6 +81,9 @@ namespace MentorMate.Restaurant.Data
 
             var adminUser = new User
             {
+                FirstName = "Johnny",
+                LastName = "Bravo",
+                PictureURL = "https://i.pinimg.com/564x/1d/23/13/1d23132de642cbdc7898bfdf6da82ccd.jpg",
                 Email = "admin@abv.bg",
                 UserName = "admin123",
             };

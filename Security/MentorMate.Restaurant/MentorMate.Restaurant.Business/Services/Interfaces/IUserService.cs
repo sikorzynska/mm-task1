@@ -1,5 +1,4 @@
-﻿using MentorMate.Restaurant.Data.Entities;
-using MentorMate.Restaurant.Domain.Models.Users;
+﻿using MentorMate.Restaurant.Domain.Models.Users;
 
 namespace MentorMate.Restaurant.Business.Services.Interfaces
 {
@@ -8,7 +7,7 @@ namespace MentorMate.Restaurant.Business.Services.Interfaces
         Task<IEnumerable<GeneralUserModel>> GetAllAsync();
         Task<GeneralUserModel> GetByIdAsync(string id);
         Task<GeneralUserModel> GetByEmailAsync(string email);
-        Task<UserResponse> AddUserAsync(AddUserModel model);
+        Task<UserResponse> AddUserAsync(CreateUserModel model);
         Task<UserResponse> DeleteUserAsync(string id);
         Task<UserResponse> UpdateUserAsync(UpdateUserModel model);
     }

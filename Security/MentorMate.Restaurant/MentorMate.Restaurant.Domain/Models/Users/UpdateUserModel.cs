@@ -9,6 +9,15 @@ namespace MentorMate.Restaurant.Domain.Models.Users
         public string? Id { get; set; }
 
         [MaxLength(100, ErrorMessage = Messages.NameLengthMessage)]
+        public string? FirstName { get; set; }
+
+        [MaxLength(100, ErrorMessage = Messages.NameLengthMessage)]
+        public string? LastName { get; set; }
+
+        [RegularExpression(RegEx.ImageUrl, ErrorMessage = Messages.ImageUrlInvalid)]
+        public string? PictureURL { get; set; }
+
+        [MaxLength(100, ErrorMessage = Messages.NameLengthMessage)]
         public string? Username { get; set; }
 
         [MaxLength(255, ErrorMessage = Messages.EmailLengthMessage)]

@@ -13,88 +13,44 @@ namespace MentorMate.Restaurant.Business.Services
             _tableRepository = tableRepository;
         }
 
-        public async Task<IEnumerable<Table>> GetAllAsync() =>
-            await _tableRepository.GetAllAsync();
-
-        public async Task<Table> GetByIdAsync(int tableId) =>
-            await _tableRepository.GetByIdAsync(tableId);
-
-        public async Task AddAsync() =>
-            await _tableRepository.AddAsync(new Table());
-
-        public async Task<bool> OccupyAsync(int tableId)
+        public Task AddAsync()
         {
-            var table = await _tableRepository.GetByIdAsync(tableId);
-
-            if(table.IsOccupied || table == null)
-            {
-                return false;
-            }
-
-            table.IsOccupied = true;
-
-            return true;
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> PayBillAsync(int tableId)
+        public Task<bool> AssignWaiterAsync(int tableId, string waiterId)
         {
-            var table = await _tableRepository.GetByIdAsync(tableId);
-
-            if(table == null || !table.IsOccupied || table.Bill <= 0)
-            {
-                return false;
-            }
-
-            table.Orders = new List<Order>();
-            table.IsOccupied = false;
-
-            return true;
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> RemoveAsync(int tableId)
+        public Task<IEnumerable<Table>> GetAllAsync()
         {
-            var table = await _tableRepository.GetByIdAsync(tableId);
-
-            if(table == null)
-            {
-                return false;
-            }
-
-            await _tableRepository.DeleteAsync(table);
-
-            return true;
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> AssignWaiterAsync(int tableId, string waiterId)
+        public Task<Table> GetByIdAsync(int tableId)
         {
-            var table = await _tableRepository.GetByIdAsync(tableId);
-
-            if(table == null)
-            {
-                return false;
-            }
-
-            table.WaiterId = waiterId;
-
-            await _tableRepository.UpdateAsync(table);
-
-            return true;
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> WaitAsync(int tableId, string waiterId)
+        public Task<bool> OccupyAsync(int tableId)
         {
-            var table = await _tableRepository.GetByIdAsync(tableId);
+            throw new NotImplementedException();
+        }
 
-            if (table == null || table.WaiterId != null)
-            {
-                return false;
-            }
+        public Task<bool> PayBillAsync(int tableId)
+        {
+            throw new NotImplementedException();
+        }
 
-            table.WaiterId = waiterId;
+        public Task<bool> RemoveAsync(int tableId)
+        {
+            throw new NotImplementedException();
+        }
 
-            await _tableRepository.UpdateAsync(table);
-
-            return true;
+        public Task<bool> WaitAsync(int tableId, string waiterId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

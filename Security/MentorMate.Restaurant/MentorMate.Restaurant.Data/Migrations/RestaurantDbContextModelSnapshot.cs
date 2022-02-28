@@ -35,7 +35,12 @@ namespace MentorMate.Restaurant.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories", (string)null);
                 });
@@ -51,18 +56,21 @@ namespace MentorMate.Restaurant.Data.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsServed")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("TableId")
                         .HasColumnType("int");
 
+                    b.Property<string>("WaiterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TableId");
+
+                    b.HasIndex("WaiterId");
 
                     b.ToTable("Orders", (string)null);
                 });
@@ -77,6 +85,10 @@ namespace MentorMate.Restaurant.Data.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -109,12 +121,7 @@ namespace MentorMate.Restaurant.Data.Migrations
                     b.Property<bool>("IsOccupied")
                         .HasColumnType("bit");
 
-                    b.Property<string>("WaiterId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("WaiterId");
 
                     b.ToTable("Tables", (string)null);
                 });
@@ -138,6 +145,14 @@ namespace MentorMate.Restaurant.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -160,6 +175,9 @@ namespace MentorMate.Restaurant.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PictureURL")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -317,6 +335,15 @@ namespace MentorMate.Restaurant.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Category", b =>
+                {
+                    b.HasOne("MentorMate.Restaurant.Data.Entities.Category", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Order", b =>
                 {
                     b.HasOne("MentorMate.Restaurant.Data.Entities.Table", "Table")
@@ -325,7 +352,15 @@ namespace MentorMate.Restaurant.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MentorMate.Restaurant.Data.Entities.User", "Waiter")
+                        .WithMany()
+                        .HasForeignKey("WaiterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Table");
+
+                    b.Navigation("Waiter");
                 });
 
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Product", b =>
@@ -341,15 +376,6 @@ namespace MentorMate.Restaurant.Data.Migrations
                         .HasForeignKey("OrderId");
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Table", b =>
-                {
-                    b.HasOne("MentorMate.Restaurant.Data.Entities.User", "Waiter")
-                        .WithMany("Tables")
-                        .HasForeignKey("WaiterId");
-
-                    b.Navigation("Waiter");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -416,11 +442,6 @@ namespace MentorMate.Restaurant.Data.Migrations
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Table", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.User", b =>
-                {
-                    b.Navigation("Tables");
                 });
 #pragma warning restore 612, 618
         }

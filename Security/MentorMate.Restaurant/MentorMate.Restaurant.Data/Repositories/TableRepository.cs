@@ -4,13 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Data.Repositories
 {
-    public class TableRepository : ITableRepository
+    public class TableRepository : Repository, ITableRepository
     {
-        private readonly RestaurantDbContext _dbContext;
-
-        public TableRepository(RestaurantDbContext dbContext)
+        public TableRepository(RestaurantDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         //Get all

@@ -16,7 +16,7 @@ namespace MentorMate.Restaurant.Business.Services
             _userRepository = userRepository;
         }
 
-        public async Task<UserResponse> AddUserAsync(AddUserModel model)
+        public async Task<UserResponse> AddUserAsync(CreateUserModel model)
         {
             var result = new UserResponse();
 
@@ -36,6 +36,9 @@ namespace MentorMate.Restaurant.Business.Services
 
             var user = new User
             {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PictureURL = model.PictureURL,
                 UserName = model.Username,
                 Email = model.Email,
             };
@@ -47,8 +50,11 @@ namespace MentorMate.Restaurant.Business.Services
                 Messages.UserCreatedMessage,
                 new GeneralUserModel
                 {
-                    Username = model.Username,
-                    Email = model.Email,
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName= user.LastName,
+                    Username = user.UserName,
+                    Email = user.Email,
                     Role = model.Role,
                 });
 
@@ -78,6 +84,9 @@ namespace MentorMate.Restaurant.Business.Services
                 new GeneralUserModel
                 {
                     Id = user.Id,
+                    FirstName= user.FirstName,
+                    LastName = user.LastName,
+                    PictureURL = user.PictureURL,
                     Username = user.UserName,
                     Email = user.Email,
                     Role = userRole
@@ -95,6 +104,9 @@ namespace MentorMate.Restaurant.Business.Services
             var result = users.Select(u => new GeneralUserModel
             {
                 Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                PictureURL = u.PictureURL,
                 Username= u.UserName,
                 Email= u.Email,
                 Role = _userRepository.GetRoleAsync(u).Result,
@@ -115,6 +127,9 @@ namespace MentorMate.Restaurant.Business.Services
             var result = new GeneralUserModel
             {
                 Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PictureURL = user.PictureURL,
                 Username = user.UserName,
                 Email = user.Email,
                 Role = _userRepository.GetRoleAsync(user).Result
@@ -135,6 +150,9 @@ namespace MentorMate.Restaurant.Business.Services
             var result = new GeneralUserModel
             {
                 Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PictureURL = user.PictureURL,
                 Username = user.UserName,
                 Email = user.Email,
                 Role = _userRepository.GetRoleAsync(user).Result
@@ -170,6 +188,9 @@ namespace MentorMate.Restaurant.Business.Services
                 return result;
             }
 
+            existingUser.FirstName = model.FirstName ?? existingUser.FirstName;
+            existingUser.LastName = model.LastName ?? existingUser.LastName;
+            existingUser.PictureURL = model.PictureURL ?? existingUser.PictureURL;
             existingUser.UserName = model.Username ?? existingUser.UserName;
             existingUser.Email = model.Email ?? existingUser.Email;
 
@@ -183,6 +204,9 @@ namespace MentorMate.Restaurant.Business.Services
                 new GeneralUserModel
                 {
                     Id = model.Id,
+                    FirstName = existingUser.FirstName,
+                    LastName = existingUser.LastName,
+                    PictureURL = existingUser.PictureURL,
                     Username = existingUser.UserName,
                     Email = existingUser.Email,
                     Role = userRole,

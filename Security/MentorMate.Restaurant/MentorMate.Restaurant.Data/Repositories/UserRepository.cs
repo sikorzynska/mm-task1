@@ -1,22 +1,17 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
-using MentorMate.Restaurant.Data.Misc;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository, IUserRepository
     {
-        private readonly RestaurantDbContext _dbContext;
         private readonly UserManager<User> _userManager;
-
-        public UserRepository(
-            RestaurantDbContext dbContext,
-            UserManager<User> userManager)
+        public UserRepository(RestaurantDbContext dbContext, UserManager<User> userManager) 
+            : base(dbContext)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _userManager = userManager;
         }
 
         //Get all

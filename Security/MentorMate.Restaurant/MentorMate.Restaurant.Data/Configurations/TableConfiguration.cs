@@ -10,11 +10,6 @@ namespace MentorMate.Restaurant.Data.Configurations
         {
             builder.ToTable("Tables");
 
-            // one-to-many relationship
-            builder.HasOne(t => t.Waiter)
-                .WithMany(w => w.Tables)
-                .HasForeignKey(x => x.WaiterId);
-
             //many-to-one relationship
             builder.HasMany(t => t.Orders)
                 .WithOne(t => t.Table)

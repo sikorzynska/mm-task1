@@ -26,7 +26,37 @@ namespace MentorMate.Restaurant.Data.Misc
                 new Category
                 {
                     Name = "Beverage"
-                }
+                },
+                new Category
+                {
+                    Name = "Indian",
+                    ParentId = 3
+                },
+                new Category
+                {
+                    Name = "Mexican",
+                    ParentId = 3
+                },
+                new Category
+                {
+                    Name = "Chinese",
+                    ParentId = 3
+                },
+                new Category
+                {
+                    Name = "Thai",
+                    ParentId = 3
+                },
+                new Category
+                {
+                    Name = "Non-alcoholic",
+                    ParentId = 5
+                },
+                new Category
+                {
+                    Name = "Alcohol",
+                    ParentId = 5
+                },
             };
     }
 }

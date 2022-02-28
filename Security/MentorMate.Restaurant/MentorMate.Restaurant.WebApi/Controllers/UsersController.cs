@@ -1,4 +1,5 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
+using MentorMate.Restaurant.Data.Misc;
 using MentorMate.Restaurant.Domain.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetUsers()
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -36,7 +37,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpGet("{userId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetUserById([FromRoute] string userId)
         {
             var user = await _userService.GetByIdAsync(userId);
@@ -50,7 +51,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetCurrentUser()
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -65,8 +66,8 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateUser([FromForm] AddUserModel model)
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> CreateUser([FromForm] CreateUserModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -84,7 +85,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpPatch]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateUser([FromForm] UpdateUserModel model)
         {
             if (!ModelState.IsValid)
@@ -103,7 +104,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpDelete("{userId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteUser([FromRoute] string userId)
         {
             var response = await _userService.DeleteUserAsync(userId);

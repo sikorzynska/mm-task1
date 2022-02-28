@@ -4,22 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Data.Repositories
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : Repository, IOrderRepository
     {
-        private readonly RestaurantDbContext _dbContext;
-
-        public OrderRepository(RestaurantDbContext dbContext)
+        public OrderRepository(RestaurantDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         //Get all
         public async Task<IEnumerable<Order>> GetAllAsync() =>
-            await _dbContext.Orders.OrderBy(o => o.TableId).ToListAsync();
+            await _dbContext.Orders.Include(x => x.Waiter).OrderBy(o => o.TableId).ToListAsync();
 
         //Get by id
         public async Task<Order> GetByIdAsync(int id) =>
-            await _dbContext.Orders.FirstOrDefaultAsync(o => o.Id == id);
+            await _dbContext.Orders.Include(x => x.Products).FirstOrDefaultAsync(o => o.Id == id);
 
         //Add
         public async Task AddAsync(Order order)

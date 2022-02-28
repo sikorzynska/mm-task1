@@ -1,101 +1,294 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Data.Entities.Enums;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
+using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.Orders;
+using MentorMate.Restaurant.Domain.Models.Users;
 
 namespace MentorMate.Restaurant.Business.Services
 {
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly ITableRepository _tableRepository;
         private readonly IProductRepository _productRepository;
 
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository)
+        public OrderService(IOrderRepository orderRepository, 
+            IProductRepository productRepository,
+            ITableRepository tableRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+            _tableRepository = tableRepository;
         }
 
-        public async Task<IEnumerable<Order>> GetAllAsync() =>
-            await _orderRepository.GetAllAsync();
-
-        public async Task<Order> GetByIdAsync(int id) =>
-            await _orderRepository.GetByIdAsync(id);
-
-        public async Task CreateOrderAsync(OrderModel model)
+        public async Task<OrderResponse> CompleteAsync(string waiterId, int orderId, bool isAdmin = false)
         {
-            var order = new Order
+            var result = new OrderResponse();
+
+            var order = await _orderRepository.GetByIdAsync(orderId);
+
+            if(order == null)
             {
-                Products = await GetProductsAsync(model),
-                TableId = model.TableId,
+                result = new OrderResponse(false, Messages.OrderNotFound);
+
+                return result;
+            }
+
+            if(order.Status == Status.Complete)
+            {
+                result = new OrderResponse(false, Messages.OrderAlreadyCompleted);
+
+                return result;
+            }
+
+            if(order.WaiterId != waiterId && !isAdmin)
+            {
+                result = new OrderResponse(false, Messages.OrderUnauthorized);
+
+                return result;
+            }
+
+            order.Status = Status.Complete;
+
+            await _orderRepository.UpdateAsync(order);
+
+            var orderModel = new GeneralOrderModel
+            {
+                Id = order.Id,
+                TableId = order.TableId,
+                Waiter = new GeneralUserModel
+                {
+                    Id = order.WaiterId,
+                    FirstName = order.Waiter.FirstName,
+                    LastName = order.Waiter.LastName,
+                    Username = order.Waiter.UserName,
+                    Email = order.Waiter.Email,
+                },
+                DateTime = order.DateTime,
+                Status = order.Status.ToString(),
+                Price = order.TotalPrice,
+                Products = order.Products.GroupBy(p => p.Name)
+                .Select(r => new OrderProductModel
+                {
+                    Name = r.Key,
+                    Quantity = r.Count(p => p.Name == r.Key),
+                    Price = r.FirstOrDefault(p => p.Name == r.Key).Price,
+                    TotalPrice = r.Sum(p => p.Price)
+
+                }).ToList()
             };
 
-            await _orderRepository.AddAsync(order);
+            result = new OrderResponse(true, Messages.OrderCompleted, orderModel);
+
+            return result;
+
         }
 
-        public async Task<bool> ChangeOrderAsync(int orderId, OrderModel model)
+        public async Task<OrderResponse> CreateAsync(string waiterId, CreateOrderModel model)
         {
-            var existingOrder = await _orderRepository.GetByIdAsync(orderId);
+            var result = new OrderResponse();
 
-            if(!existingOrder.IsActive || existingOrder.IsServed || existingOrder == null)
+            var table = await _tableRepository.GetByIdAsync(model.TableId);
+
+            if(table == null)
             {
-                return false;
+                result = new OrderResponse(false, Messages.InvalidTableId);
+
+                return result;
             }
 
-            var products = await GetProductsAsync(model);
-
-            existingOrder.Products = products;
-            existingOrder.TableId = model.TableId;
-
-            await _orderRepository.UpdateAsync(existingOrder);
-
-            return true;
-        }
-
-        public async Task<bool> CancelOrderAsync(int id)
-        {
-            var existingOrder = await _orderRepository.GetByIdAsync(id);
-
-            if (!existingOrder.IsActive || existingOrder.IsServed || existingOrder == null)
+            if(!model.ProductIds.Any())
             {
-                return false;
+                result = new OrderResponse(false, Messages.OrderProductsRequired);
+
+                return result;
             }
 
-            existingOrder.IsActive = false;
-
-            await _orderRepository.UpdateAsync(existingOrder);
-
-            return true;
-        }
-
-        public async Task<bool> ServeOrderAsync(int orderId)
-        {
-            var existingOrder = await _orderRepository.GetByIdAsync(orderId);
-
-            if (!existingOrder.IsActive || existingOrder.IsServed || existingOrder == null)
-            {
-                return false;
-            }
-
-            existingOrder.IsServed = true;
-            existingOrder.IsActive = false;
-
-            await _orderRepository.UpdateAsync(existingOrder);
-
-            return true;
-        }
-
-        private async Task<ICollection<Product>> GetProductsAsync(OrderModel model)
-        {
             var products = new List<Product>();
 
-            foreach (var id in model.ProductIds)
+            foreach (var productId in model.ProductIds)
             {
-                var product = await _productRepository.GetByIdAsync(id);
+                var product = await _productRepository.GetByIdAsync(productId);
+
+                if (product == null)
+                {
+                    result = new OrderResponse(false, string.Format(Messages.OrderInvalidProductId, productId));
+
+                    return result;
+                }
+
                 products.Add(product);
             }
 
-            return products;
+            var order = new Order
+            {
+                TableId = model.TableId,
+                WaiterId = waiterId,
+                Products = products,
+            };
+
+            await _orderRepository.AddAsync(order);
+
+            var orderModel = new GeneralOrderModel
+            {
+                Id = order.Id,
+                TableId = order.TableId,
+                Waiter = new GeneralUserModel
+                {
+                    Id = order.WaiterId,
+                    FirstName = order.Waiter.FirstName,
+                    LastName = order.Waiter.LastName,
+                    Username = order.Waiter.UserName,
+                    Email = order.Waiter.Email,
+                },
+                DateTime = order.DateTime,
+                Status = order.Status.ToString(),
+                Price = order.TotalPrice,
+                Products = order.Products.GroupBy(p => p.Name)
+                .Select(r => new OrderProductModel
+                {
+                    Name = r.Key,
+                    Quantity = r.Count(p => p.Name == r.Key),
+                    Price = r.FirstOrDefault(p => p.Name == r.Key).Price,
+                    TotalPrice = r.Sum(p => p.Price)
+
+                }).ToList()
+            };
+
+            result = new OrderResponse(true, Messages.OrderCreated, orderModel);
+
+            return result;
+        }
+
+        public async Task<OrderResponse> DeleteAsync(int id)
+        {
+            var result = new OrderResponse();
+            var order = await _orderRepository.GetByIdAsync(id);
+
+            if (order == null)
+            {
+                result = new OrderResponse(false, Messages.OrderNotFound);
+
+                return result;
+            }
+
+            var orderModel = new GeneralOrderModel
+            {
+                Id = order.Id,
+                TableId = order.TableId,
+                Waiter = new GeneralUserModel
+                {
+                    Id = order.WaiterId,
+                    FirstName = order.Waiter.FirstName,
+                    LastName = order.Waiter.LastName,
+                    Username = order.Waiter.UserName,
+                    Email = order.Waiter.Email,
+                },
+                DateTime = order.DateTime,
+                Status = order.Status.ToString(),
+                Price = order.TotalPrice,
+                Products = order.Products.GroupBy(p => p.Name)
+                .Select(r => new OrderProductModel
+                {
+                    Name = r.Key,
+                    Quantity = r.Count(p => p.Name == r.Key),
+                    Price = r.FirstOrDefault(p => p.Name == r.Key).Price,
+                    TotalPrice = r.Sum(p => p.Price)
+
+                }).ToList()
+            };
+
+            result = new OrderResponse(true, Messages.OrderDeleted, orderModel);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<GeneralOrderModel>> GetActiveAsync()
+        {
+            var orders = await _orderRepository.GetAllAsync();
+
+            var result = orders.Where(x => x.Status == Status.Active).Select(o => new GeneralOrderModel
+            {
+                Id = o.Id,
+                TableId = o.TableId,
+                Waiter = new GeneralUserModel
+                {
+                    Id = o.WaiterId,
+                    FirstName = o.Waiter.FirstName,
+                    LastName = o.Waiter.LastName,
+                    Username = o.Waiter.UserName,
+                    Email = o.Waiter.Email,
+                },
+                DateTime = o.DateTime,
+                Status = o.Status.ToString(),
+                Price = o.TotalPrice,
+            });
+
+            return result;
+        }
+
+        public async Task<IEnumerable<GeneralOrderModel>> GetAllAsync()
+        {
+            var orders = await _orderRepository.GetAllAsync();
+
+            var result = orders.Select(o => new GeneralOrderModel
+            {
+                Id = o.Id,
+                TableId = o.TableId,
+                Waiter = new GeneralUserModel
+                {
+                    Id = o.WaiterId,
+                    FirstName = o.Waiter.FirstName,
+                    LastName = o.Waiter.LastName,
+                    Username = o.Waiter.UserName,
+                    Email = o.Waiter.Email,
+                },
+                DateTime = o.DateTime,
+                Status = o.Status.ToString(),
+                Price = o.TotalPrice,
+            });
+
+            return result;
+        }
+
+        public async Task<GeneralOrderModel> GetByIdAsync(int id)
+        {
+            var order = await _orderRepository.GetByIdAsync(id);
+
+            if(order == null)
+            {
+                return null;
+            }
+
+            var result = new GeneralOrderModel
+            {
+                Id = order.Id,
+                TableId = order.TableId,
+                Waiter = new GeneralUserModel
+                {
+                    Id = order.WaiterId,
+                    FirstName = order.Waiter.FirstName,
+                    LastName = order.Waiter.LastName,
+                    Username = order.Waiter.UserName,
+                    Email = order.Waiter.Email,
+                },
+                DateTime = order.DateTime,
+                Status = order.Status.ToString(),
+                Price = order.TotalPrice,
+                Products = order.Products.GroupBy(p => p.Name)
+                .Select(r => new OrderProductModel
+                {
+                    Name = r.Key,
+                    Quantity = r.Count(p => p.Name == r.Key),
+                    Price = r.FirstOrDefault(p => p.Name == r.Key).Price,
+                    TotalPrice = r.Sum(p => p.Price)
+
+                }).ToList()
+            };
+
+            return result;
         }
     }
 }

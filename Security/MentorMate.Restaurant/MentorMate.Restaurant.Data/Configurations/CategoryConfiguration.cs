@@ -10,7 +10,6 @@ namespace MentorMate.Restaurant.Data.Configurations
         {
             builder.ToTable("Categories");
 
-            //many-to-one relationship
             builder.HasMany(c => c.Products)
                 .WithOne(p => p.Category);
         }

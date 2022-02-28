@@ -4,13 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Data.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : Repository, IProductRepository
     {
-        private readonly RestaurantDbContext _dbContext;
-
-        public ProductRepository(RestaurantDbContext dbContext)
+        public ProductRepository(RestaurantDbContext _dbContext) : base(_dbContext)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         //Get all
@@ -40,7 +37,7 @@ namespace MentorMate.Restaurant.Data.Repositories
         //Delete
         public async Task DeleteAsync(Product product)
         {
-            _dbContext.Remove(product);
+            _dbContext.Products.Remove(product);
 
             await _dbContext.SaveChangesAsync();
         }
