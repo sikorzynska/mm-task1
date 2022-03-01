@@ -12,11 +12,11 @@ namespace MentorMate.Restaurant.Data.Repositories
 
         //Get all
         public async Task<IEnumerable<Order>> GetAllAsync() =>
-            await _dbContext.Orders.Include(x => x.Waiter).OrderBy(o => o.TableId).ToListAsync();
+            await _dbContext.Orders.Include(x => x.OrderProducts).Include(x => x.Waiter).OrderBy(o => o.TableId).ToListAsync();
 
         //Get by id
         public async Task<Order> GetByIdAsync(int id) =>
-            await _dbContext.Orders.Include(x => x.Products).FirstOrDefaultAsync(o => o.Id == id);
+            await _dbContext.Orders.Include(x => x.OrderProducts).FirstOrDefaultAsync(o => o.Id == id);
 
         //Add
         public async Task AddAsync(Order order)

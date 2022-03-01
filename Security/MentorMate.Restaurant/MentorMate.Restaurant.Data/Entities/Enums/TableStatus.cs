@@ -1,8 +1,8 @@
 ﻿namespace MentorMate.Restaurant.Data.Entities.Enums
 {
-    public enum Status
+    public enum TableStatus
     {
         Active,
-        Complete
+        Free
     }
 }

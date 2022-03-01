@@ -9,15 +9,14 @@ namespace MentorMate.Restaurant.Data.Entities
         [Key]
         public int Id { get; set; }
         public DateTime DateTime { get; set; } = DateTime.Now;
-        public ICollection<Product> Products { get; set; } = new List<Product>();
         public int TableId { get; set; }
         [ForeignKey("TableId")]
         public Table Table { get; set; }
         public string WaiterId { get; set; }
         [ForeignKey("WaiterId")]
         public User Waiter { get; set; }
-        public Status Status { get; set; } = Status.Active;
-        public decimal TotalPrice => Products.Select(p => p.Price).Sum();
+        public OrderStatus Status { get; set; } = OrderStatus.Active;
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
     }
 }

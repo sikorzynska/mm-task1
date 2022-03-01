@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MentorMate.DeviceManager.Data\MentorMate.DeviceManager.Data.csproj" />
+    <ProjectReference Include="..\MentorMate.DeviceManager.Domain\MentorMate.DeviceManager.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

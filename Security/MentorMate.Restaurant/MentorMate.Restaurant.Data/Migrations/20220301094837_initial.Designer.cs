@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MentorMate.Restaurant.Data.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20220228145907_initial")]
+    [Migration("20220301094837_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,6 +77,24 @@ namespace MentorMate.Restaurant.Data.Migrations
                     b.ToTable("Orders", (string)null);
                 });
 
+            modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.OrderProduct", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderProducts", (string)null);
+                });
+
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -97,17 +115,12 @@ namespace MentorMate.Restaurant.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("Products", (string)null);
                 });
@@ -120,10 +133,18 @@ namespace MentorMate.Restaurant.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool>("IsOccupied")
-                        .HasColumnType("bit");
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WaiterId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("WaiterId");
 
                     b.ToTable("Tables", (string)null);
                 });
@@ -365,6 +386,25 @@ namespace MentorMate.Restaurant.Data.Migrations
                     b.Navigation("Waiter");
                 });
 
+            modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.OrderProduct", b =>
+                {
+                    b.HasOne("MentorMate.Restaurant.Data.Entities.Order", "Order")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MentorMate.Restaurant.Data.Entities.Product", "Product")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Product", b =>
                 {
                     b.HasOne("MentorMate.Restaurant.Data.Entities.Category", "Category")
@@ -373,11 +413,16 @@ namespace MentorMate.Restaurant.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MentorMate.Restaurant.Data.Entities.Order", null)
-                        .WithMany("Products")
-                        .HasForeignKey("OrderId");
-
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Table", b =>
+                {
+                    b.HasOne("MentorMate.Restaurant.Data.Entities.User", "Waiter")
+                        .WithMany()
+                        .HasForeignKey("WaiterId");
+
+                    b.Navigation("Waiter");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -438,7 +483,12 @@ namespace MentorMate.Restaurant.Data.Migrations
 
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Order", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("OrderProducts");
+                });
+
+            modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Product", b =>
+                {
+                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Table", b =>
