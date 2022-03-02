@@ -46,7 +46,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(category);
         }
 
-        [HttpPut]
+        [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> CreateCategory([FromForm] CreateCategoryModel model)
         {
@@ -65,7 +65,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpPatch]
+        [HttpPut]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryModel model)
         {

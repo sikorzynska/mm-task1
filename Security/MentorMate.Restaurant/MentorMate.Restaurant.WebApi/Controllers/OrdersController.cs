@@ -1,5 +1,6 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Misc;
+using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
     {
         private readonly IOrderService _orderService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IOrderRepository orderRepo)
         {
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
@@ -31,70 +32,32 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(orders);
         }
 
-        //[HttpGet("{productId}")]
-        //[Authorize(Roles = UserRoles.Admin)]
-        //public async Task<IActionResult> GetProduct([FromRoute] int productId)
-        //{
-        //    var product = await _productService.GetByIdAsync(productId);
+        [HttpGet("{orderId}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> GetOrder([FromRoute] int orderId)
+        {
+            var order = await _orderService.GetByIdAsync(orderId);
 
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (order == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(product);
-        //}
+            return Ok(order);
+        }
 
-        //[HttpPut]
-        //[Authorize(Roles = UserRoles.Admin)]
-        //public async Task<IActionResult> CreateProduct([FromForm] CreateProductModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [HttpDelete("{orderId}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> DeleteProduct([FromRoute] int orderId)
+        {
+            var response = await _orderService.DeleteAsync(orderId);
 
-        //    var response = await _productService.AddAsync(model);
+            if (!response.Result)
+            {
+                return NotFound(response);
+            }
 
-        //    if (!response.Result)
-        //    {
-        //        return BadRequest(response);
-        //    }
-
-        //    return Ok(response);
-        //}
-
-        //[HttpPatch]
-        //[Authorize(Roles = UserRoles.Admin)]
-        //public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var response = await _productService.UpdateAsync(model);
-
-        //    if (!response.Result)
-        //    {
-        //        return BadRequest(response);
-        //    }
-
-        //    return Ok(response);
-        //}
-
-        //[HttpDelete("{productId}")]
-        //[Authorize(Roles = UserRoles.Admin)]
-        //public async Task<IActionResult> DeleteProduct([FromRoute] int productId)
-        //{
-        //    var response = await _productService.DeleteAsync(productId);
-
-        //    if (!response.Result)
-        //    {
-        //        return NotFound(response);
-        //    }
-
-        //    return Ok(response);
-        //}
+            return Ok(response);
+        }
     }
 }

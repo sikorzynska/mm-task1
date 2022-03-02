@@ -1,6 +1,9 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
+using MentorMate.Restaurant.Data.Entities;
 using MentorMate.Restaurant.Data.Entities.Enums;
+using MentorMate.Restaurant.Data.Misc;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
+using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.Orders;
 using MentorMate.Restaurant.Domain.Models.Users;
 
@@ -164,68 +167,49 @@ namespace MentorMate.Restaurant.Business.Services
 
         public async Task<OrderResponse> DeleteAsync(int id)
         {
-            throw new ArgumentException(nameof(id));
-            //var result = new OrderResponse();
-            //var order = await _orderRepository.GetByIdAsync(id);
+            var result = new OrderResponse();
 
-            //if (order == null)
-            //{
-            //    result = new OrderResponse(false, Messages.OrderNotFound);
+            var order = await _orderRepository.GetByIdAsync(id);
 
-            //    return result;
-            //}
+            if (order == null)
+            {
+                result = new OrderResponse(false, Messages.OrderNotFound);
 
-            //var orderModel = new GeneralOrderModel
-            //{
-            //    Id = order.Id,
-            //    TableId = order.TableId,
-            //    Waiter = new GeneralUserModel
-            //    {
-            //        Id = order.WaiterId,
-            //        FirstName = order.Waiter.FirstName,
-            //        LastName = order.Waiter.LastName,
-            //        Username = order.Waiter.UserName,
-            //        Email = order.Waiter.Email,
-            //    },
-            //    DateTime = order.DateTime,
-            //    Status = order.Status.ToString(),
-            //    Price = order.TotalPrice,
-            //    Products = order.Products.GroupBy(p => p.Name)
-            //    .Select(r => new OrderProductModel
-            //    {
-            //        Name = r.Key,
-            //        Quantity = r.Count(p => p.Name == r.Key),
-            //        Price = r.FirstOrDefault(p => p.Name == r.Key).Price,
-            //        TotalPrice = r.Sum(p => p.Price)
+                return result;
+            }
 
-            //    }).ToList()
-            //};
+            await _orderRepository.DeleteAsync(order);
 
-            //result = new OrderResponse(true, Messages.OrderDeleted, orderModel);
+            result = new OrderResponse(true, Messages.OrderDeleted,
+                new GeneralOrderModel
+                {
+                    Id = order.Id,
+                    TableId = order.TableId,
+                    Waiter = order.Waiter.FirstName + " " + order.Waiter.LastName,
+                    DateTime = order.DateTime.ToString("dddd, dd MMMM yyyy"),
+                    Status = order.Status.ToString(),
+                    Price = OrderTotalPrice(order).Result,
+                    Products = OrderProductModelList(order).Result,
+                });
 
-            //return result;
+            return result;
         }
 
         public async Task<IEnumerable<GeneralOrderModel>> GetActiveAsync()
         {
             var orders = await _orderRepository.GetAllAsync();
 
-            var result = orders.Where(x => x.Status == OrderStatus.Active).Select(o => new GeneralOrderModel
+            var result = orders.Where(x => x.Status == OrderStatus.Active)
+                .Select(o => new GeneralOrderModel
             {
                 Id = o.Id,
                 TableId = o.TableId,
-                Waiter = new GeneralUserModel
-                {
-                    Id = o.WaiterId,
-                    FirstName = o.Waiter.FirstName,
-                    LastName = o.Waiter.LastName,
-                    Username = o.Waiter.UserName,
-                    Email = o.Waiter.Email,
-                },
-                DateTime = o.DateTime,
+                Waiter = o.Waiter.FirstName + " " + o.Waiter.LastName,
+                DateTime = o.DateTime.ToString("dddd, dd MMMM yyyy"),
                 Status = o.Status.ToString(),
-                Price = OrderTotalPrice(o.Id).Result,
-            });
+                Price = OrderTotalPrice(o).Result,
+                Products = OrderProductModelList(o).Result,
+            }).ToList();
 
             return result;
         }
@@ -238,28 +222,12 @@ namespace MentorMate.Restaurant.Business.Services
             {
                 Id = o.Id,
                 TableId = o.TableId,
-                Waiter = new GeneralUserModel
-                {
-                    Id = o.WaiterId,
-                    FirstName = o.Waiter.FirstName,
-                    LastName = o.Waiter.LastName,
-                    Username = o.Waiter.UserName,
-                    Email = o.Waiter.Email,
-                },
-                DateTime = o.DateTime,
+                Waiter = o.Waiter.FirstName + " " + o.Waiter.LastName,
+                DateTime = o.DateTime.ToString("dddd, dd MMMM yyyy"),
                 Status = o.Status.ToString(),
-                Price = OrderTotalPrice(o.Id).Result
+                Price = OrderTotalPrice(o).Result,
+                Products = OrderProductModelList(o).Result,
             }).ToList();
-
-                //            Products = o.Products.GroupBy(p => p.Name)
-                //.Select(r => new OrderProductModel
-                //{
-                //    Name = r.Key,
-                //    Quantity = r.Count(p => p.Name == r.Key),
-                //    Price = r.FirstOrDefault(p => p.Name == r.Key).Price,
-                //    TotalPrice = r.Sum(p => p.Price)
-
-                //}).ToList()
 
             return result;
         }
@@ -277,38 +245,71 @@ namespace MentorMate.Restaurant.Business.Services
             {
                 Id = order.Id,
                 TableId = order.TableId,
-                Waiter = new GeneralUserModel
-                {
-                    Id = order.WaiterId,
-                    FirstName = order.Waiter.FirstName,
-                    LastName = order.Waiter.LastName,
-                    Username = order.Waiter.UserName,
-                    Email = order.Waiter.Email,
-                },
-                DateTime = order.DateTime,
+                Waiter = order.Waiter.FirstName + " " + order.Waiter.LastName,
+                DateTime = order.DateTime.ToString("dddd, dd MMMM yyyy"),
                 Status = order.Status.ToString(),
-                Price = OrderTotalPrice(order.Id).Result
+                Price = OrderTotalPrice(order).Result,
+                Products = OrderProductModelList(order).Result,
             };
 
             return result;
         }
 
-        private async Task<decimal> OrderTotalPrice(int orderId)
+        #region inner functions
+        //Inner function for getting the total price of an order
+        private async Task<decimal> OrderTotalPrice(Order order)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId);
+            //Get the order's OrderProducts
+            var orderProducts = order.OrderProducts;
 
-            var totalPrice = 0m;
+            //Initialize new decimal variable
+            var orderPrice = 0m;
 
-            foreach (var op in order.OrderProducts)
+            //Foreach loop to calculate the price of each OrderProduct
+            foreach (var op in orderProducts)
             {
-                var productPrice = _productRepository.GetByIdAsync(op.ProductId).Result.Price;
+                //Multiply the product's price by the product quantity to get the total
+                var totalProductPrice = op.ProductPrice * op.ProductCount;
 
-                var price = productPrice * op.ProductCount;
-
-                totalPrice += price;
+                //Add the product total to the order total
+                orderPrice += totalProductPrice;
             }
 
-            return totalPrice;
+            //Return order total
+            return orderPrice;
         }
+
+        //Inner function for getting a collection of OrderProductModel of a particular order
+        private async Task<List<OrderProductModel>> OrderProductModelList(Order order)
+        {
+            //Initialize a new list of OrderProductModel
+            var opmList = new List<OrderProductModel>();
+
+            //Get the order's OrderProducts
+            var orderProducts = order.OrderProducts;
+
+            //Foreach loop to convert all OrderProducts to OrderProductModels and fill up the opmList
+            foreach (var op in orderProducts)
+            {
+                //Get the particular product so we can access it's properties
+                var product = await _productRepository.GetByIdAsync(op.ProductId);
+
+                //Create a new OrderProductModel
+                var opm = new OrderProductModel
+                {
+                    Name = product.Name,
+                    Quantity = op.ProductCount,
+                    Price = op.ProductPrice,
+                    TotalPrice = product.Price * op.ProductCount,
+                };
+
+                //Add the OPM to the list
+                opmList.Add(opm);
+            }
+
+            //Return the result
+            return opmList;
+        }
+        #endregion
     }
 }

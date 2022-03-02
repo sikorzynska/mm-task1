@@ -2,47 +2,42 @@
 {
     public static class Messages
     {
-        #region general
-        public const string ProccessFailMessage = "Failure";
-        public const string ProccessSuccessMessage = "Success";
-        #endregion
-
         #region authentication
-        public const string LoginErrorMessage = "Invalid email or password";
+        public const string LoginError = "Invalid email or password";
         #endregion
 
         #region user
         //General
-        public const string UserNotFoundMessage = "User not found";
-        public const string UserUpdatedMessage = "User updated successfully";
-        public const string UserCreatedMessage = "User created successfully";
-        public const string UserDeletedMessage = "User deleted successfully";
+        public const string UserNotFound = "User not found";
+        public const string UserUpdated = "User updated successfully";
+        public const string UserCreated = "User created successfully";
+        public const string UserDeleted = "User deleted successfully";
         //Name
-        public const string NameRequiredMessage = "Name is required";
-        public const string NameLengthMessage = "Name must not exceed 100 characters";
+        public const string UserNameRequired = "Name is required";
+        public const string UserNameLength = "Name must not exceed 100 characters";
         //Picture
-        public const string ImageUrlInvalid = "Invalid image url";
+        public const string UserImageUrlInvalid = "Invalid image url";
         //Username
-        public const string UsernameRequiredMessage = "Username is required";
-        public const string UsernameLengthMessage = "Username must not exceed 100 characters";
+        public const string UserUsernameRequired = "Username is required";
+        public const string UserUsernameLength = "Username must not exceed 100 characters";
         //Email
-        public const string EmailRequiredMessage = "Email is required";
-        public const string EmailLengthMessage = "Email must not exceed 255 characters";
-        public const string InvalidEmailMessage = "Invalid email address";
-        public const string EmailTakenMessage = "Email address is already in use";
+        public const string UserEmailRequired = "Email is required";
+        public const string UserEmailLength = "Email must not exceed 255 characters";
+        public const string UserEmailInvalid = "Invalid email address";
+        public const string UserEmailTaken = "Email address is already in use";
         //Password
-        public const string PasswordRequiredMessage = "Password is required";
-        public const string PasswordLengthMessage = "Password must be between 8 and 100 characters long";
+        public const string UserPasswordRequired = "Password is required";
+        public const string UserPasswordLength = "Password must be between 8 and 100 characters long";
         //Role
-        public const string RoleRequiredMessage = "Role is required";
-        public const string RoleInvalidMessage = "Role is invalid";
+        public const string UserRoleRequired = "Role is required";
+        public const string UserRoleInvalid = "Role is invalid";
         #endregion
 
         #region category
         //General
-        public const string CategoryCreatedMessage = "Category successfully created";
-        public const string CategoryUpdatedMessage = "Category successfully updated";
-        public const string CategoryDeletedMessage = "Category successfully deleted";
+        public const string CategoryCreated = "Category successfully created";
+        public const string CategoryUpdated = "Category successfully updated";
+        public const string CategoryDeleted = "Category successfully deleted";
         public const string CategoryNotFound = "Category not found";
         //Name
         public const string CategoryNameRequired = "Category name is required";
@@ -83,7 +78,7 @@
         #endregion
 
         #region table
-        public const string InvalidTableId = "Invalid table ID";
+        public const string TableInvalidId = "Invalid table ID";
         #endregion
     }
 }

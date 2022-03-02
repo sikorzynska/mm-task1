@@ -14,6 +14,10 @@ namespace MentorMate.Restaurant.Data.Configurations
             builder.HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(x => x.CategoryId);
+
+            builder.HasMany(p => p.OrderProducts)
+                .WithOne(op => op.Product)
+                .HasForeignKey(op => op.ProductId);
         }
     }
 }

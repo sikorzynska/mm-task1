@@ -252,7 +252,8 @@ namespace MentorMate.Restaurant.Data.Migrations
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    ProductCount = table.Column<int>(type: "int", nullable: false)
+                    ProductCount = table.Column<int>(type: "int", nullable: false),
+                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {

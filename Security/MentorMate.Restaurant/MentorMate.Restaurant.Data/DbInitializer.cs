@@ -44,6 +44,7 @@ namespace MentorMate.Restaurant.Data
             await SeedRolesAsync();
             await SeedUsersAsync();
             await SeedOrdersAsync();
+            await SeedOrderProductsAsync();
         }
         
         private async Task SeedRolesAsync()
@@ -176,6 +177,7 @@ namespace MentorMate.Restaurant.Data
                 {
                     TableId = tableId,
                     WaiterId = waiterId,
+                    DateTime = RandomDate(),
                 };
 
                 orders.Add(order);
@@ -184,8 +186,20 @@ namespace MentorMate.Restaurant.Data
             await _dbContext.Orders.AddRangeAsync(orders);
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        private async Task SeedOrderProductsAsync()
+        {
+            if(await _dbContext.OrderProducts.AnyAsync())
+            {
+                return;
+            }
+
+            var rnd = new Random();
 
             var dbOrders = await _dbContext.Orders.ToListAsync();
+
+            var orderProducts = new List<OrderProduct>();
 
             foreach (var order in dbOrders)
             {
@@ -193,22 +207,41 @@ namespace MentorMate.Restaurant.Data
 
                 for (int j = 0; j < count; j++)
                 {
-                    var product = await _dbContext.Products.OrderBy(x => new Guid().ToString()).FirstOrDefaultAsync();
+                    var productsCount = _dbContext.Products.Count();
+
+                    var randomNumber = rnd.Next(1, productsCount + 1);
+
+                    var product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == randomNumber);
 
                     var productCount = rnd.Next(1, 4);
 
-                    var op = new OrderProduct
+                    if(!orderProducts.Any(x => x.ProductId == product.Id && x.OrderId == order.Id))
                     {
-                        OrderId = order.Id,
-                        ProductId = product.Id,
-                        ProductCount = productCount,
-                    };
+                        var op = new OrderProduct
+                        {
+                            OrderId = order.Id,
+                            ProductId = product.Id,
+                            ProductCount = productCount,
+                            ProductPrice = product.Price,
+                        };
 
-                    await _dbContext.OrderProducts.AddAsync(op);
+                        orderProducts.Add(op);
+                    }
                 }
             }
 
+            _dbContext.OrderProducts.AddRange(orderProducts);
+
             await _dbContext.SaveChangesAsync();
+        }
+
+        private DateTime RandomDate()
+        {
+            var rnd = new Random();
+
+            DateTime start = new DateTime(1995, 1, 1);
+            int range = (DateTime.Today - start).Days;
+            return start.AddDays(rnd.Next(range));
         }
     }
 }

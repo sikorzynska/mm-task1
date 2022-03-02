@@ -22,14 +22,14 @@ namespace MentorMate.Restaurant.Business.Services
 
             if(await EmailIsTaken(model.Email))
             {
-                result = new UserResponse(false, Messages.EmailTakenMessage);
+                result = new UserResponse(false, Messages.UserEmailTaken);
 
                 return result;
             }
 
             if(!RoleIsValid(model.Role))
             {
-                result = new UserResponse(false, Messages.RoleInvalidMessage);
+                result = new UserResponse(false, Messages.UserRoleInvalid);
 
                 return result;
             }
@@ -47,7 +47,7 @@ namespace MentorMate.Restaurant.Business.Services
 
             result = new UserResponse(
                 true,
-                Messages.UserCreatedMessage,
+                Messages.UserCreated,
                 new GeneralUserModel
                 {
                     Id = user.Id,
@@ -68,7 +68,7 @@ namespace MentorMate.Restaurant.Business.Services
 
             if(user == null)
             {
-                result = new UserResponse(false, Messages.UserNotFoundMessage);
+                result = new UserResponse(false, Messages.UserNotFound);
 
                 return result;
             }
@@ -76,11 +76,11 @@ namespace MentorMate.Restaurant.Business.Services
             var userRole = await _userRepository.GetRoleAsync(user);
 
             result.Result = true;
-            result.Message = Messages.UserDeletedMessage;
+            result.Message = Messages.UserDeleted;
 
             result = new UserResponse(
                 true,
-                Messages.UserDeletedMessage,
+                Messages.UserDeleted,
                 new GeneralUserModel
                 {
                     Id = user.Id,
@@ -169,21 +169,21 @@ namespace MentorMate.Restaurant.Business.Services
 
             if(existingUser == null)
             {
-                result = new UserResponse(false, Messages.UserNotFoundMessage);
+                result = new UserResponse(false, Messages.UserNotFound);
 
                 return result;
             }
 
             if(!string.IsNullOrEmpty(model.Email) && await EmailIsTaken(model.Email))
             {
-                result = new UserResponse(false, Messages.EmailTakenMessage);
+                result = new UserResponse(false, Messages.UserEmailTaken);
 
                 return result;
             }
 
             if (!string.IsNullOrEmpty(model.Role) && !RoleIsValid(model.Role))
             {
-                result = new UserResponse(false, Messages.RoleInvalidMessage);
+                result = new UserResponse(false, Messages.UserRoleInvalid);
 
                 return result;
             }
@@ -200,7 +200,7 @@ namespace MentorMate.Restaurant.Business.Services
 
             result = new UserResponse(
                 true,
-                Messages.UserUpdatedMessage,
+                Messages.UserUpdated,
                 new GeneralUserModel
                 {
                     Id = model.Id,

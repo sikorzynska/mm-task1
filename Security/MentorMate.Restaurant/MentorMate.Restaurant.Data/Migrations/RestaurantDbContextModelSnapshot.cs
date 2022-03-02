@@ -86,6 +86,9 @@ namespace MentorMate.Restaurant.Data.Migrations
                     b.Property<int>("ProductCount")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("ProductPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");

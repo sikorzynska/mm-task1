@@ -5,32 +5,32 @@ namespace MentorMate.Restaurant.Domain.Models.Users
 {
     public class CreateUserModel
     {
-        [Required(ErrorMessage = Messages.NameRequiredMessage)]
-        [MaxLength(100, ErrorMessage = Messages.NameLengthMessage)]
+        [Required(ErrorMessage = Messages.UserNameRequired)]
+        [MaxLength(100, ErrorMessage = Messages.UserNameLength)]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = Messages.NameRequiredMessage)]
-        [MaxLength(100, ErrorMessage = Messages.NameLengthMessage)]
+        [Required(ErrorMessage = Messages.UserNameRequired)]
+        [MaxLength(100, ErrorMessage = Messages.UserNameLength)]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = Messages.UsernameRequiredMessage)]
-        [MaxLength(100, ErrorMessage = Messages.UsernameLengthMessage)]
+        [Required(ErrorMessage = Messages.UserUsernameRequired)]
+        [MaxLength(100, ErrorMessage = Messages.UserUsernameLength)]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = Messages.EmailRequiredMessage)]
-        [MaxLength(255, ErrorMessage = Messages.EmailLengthMessage)]
-        [EmailAddress(ErrorMessage = Messages.InvalidEmailMessage)]
+        [Required(ErrorMessage = Messages.UserEmailRequired)]
+        [MaxLength(255, ErrorMessage = Messages.UserEmailLength)]
+        [EmailAddress(ErrorMessage = Messages.UserEmailInvalid)]
         public string Email { get; set; }
 
-        [RegularExpression(RegEx.ImageUrl, ErrorMessage = Messages.ImageUrlInvalid)]
+        [RegularExpression(RegEx.ImageUrl, ErrorMessage = Messages.UserImageUrlInvalid)]
         public string? PictureURL { get; set; }
 
-        [Required(ErrorMessage = Messages.RoleRequiredMessage)]
+        [Required(ErrorMessage = Messages.UserRoleRequired)]
         public string Role { get; set; }
 
-        [Required(ErrorMessage = Messages.PasswordRequiredMessage)]
-        [MinLength(8, ErrorMessage = Messages.PasswordLengthMessage),
-            MaxLength(100, ErrorMessage = Messages.PasswordLengthMessage)]
+        [Required(ErrorMessage = Messages.UserPasswordRequired)]
+        [MinLength(8, ErrorMessage = Messages.UserPasswordLength),
+            MaxLength(100, ErrorMessage = Messages.UserPasswordLength)]
         public string Password { get; set; }
     }
 }

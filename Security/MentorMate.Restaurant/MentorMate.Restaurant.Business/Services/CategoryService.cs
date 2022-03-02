@@ -28,7 +28,7 @@ namespace MentorMate.Restaurant.Business.Services
             await _categoryRepository.AddAsync(category);
 
             response = new CategoryResponse(true,
-                Messages.CategoryCreatedMessage,
+                Messages.CategoryCreated,
                 new GeneralCategoryModel
                 {
                     Id = category.Id,
@@ -56,7 +56,7 @@ namespace MentorMate.Restaurant.Business.Services
 
             response = new CategoryResponse(
                 true,
-                Messages.CategoryDeletedMessage,
+                Messages.CategoryDeleted,
                 new GeneralCategoryModel
                 {
                     Id = category.Id,
@@ -119,7 +119,7 @@ namespace MentorMate.Restaurant.Business.Services
 
             response = new CategoryResponse(
                 true,
-                Messages.CategoryUpdatedMessage,
+                Messages.CategoryUpdated,
                 new GeneralCategoryModel
                 {
                     Id = category.Id,

@@ -34,13 +34,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                return BadRequest(new AuthorizeErrorResponse(Messages.LoginErrorMessage));
+                return BadRequest(new AuthorizeErrorResponse(Messages.LoginError));
             }
 
             var signInResult = await _signInManager.PasswordSignInAsync(user, request.Password, false, false);
             if (!signInResult.Succeeded)
             {
-                return BadRequest(new AuthorizeErrorResponse(Messages.LoginErrorMessage));
+                return BadRequest(new AuthorizeErrorResponse(Messages.LoginError));
             }
 
             var response = new AuthorizeResponse

@@ -46,7 +46,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(product);
         }
 
-        [HttpPut]
+        [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductModel model)
         {
@@ -65,7 +65,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpPatch]
+        [HttpPut]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductModel model)
         {
