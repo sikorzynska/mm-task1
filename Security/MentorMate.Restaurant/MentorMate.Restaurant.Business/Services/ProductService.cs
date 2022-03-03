@@ -2,7 +2,11 @@
 using MentorMate.Restaurant.Data.Entities;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using MentorMate.Restaurant.Domain.Consts;
+using MentorMate.Restaurant.Domain.Models.General;
 using MentorMate.Restaurant.Domain.Models.Products;
+using MentorMate.Restaurant.Domain.Models.Sorting;
+using MentorMate.Restaurant.Domain.Models.Sorting.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Business.Services
 {
@@ -17,50 +21,76 @@ namespace MentorMate.Restaurant.Business.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<IEnumerable<GeneralProductModel>> GetAllAsync()
+        public async Task<IEnumerable<Product>> GetAllAsync(ProductSortingModel sort)
         {
-            var products = await _productRepository.GetAllAsync();
+            var result = new List<Product>();
 
-            var result = products.Select(x => new GeneralProductModel
+            if(sort == null)
             {
-                Id = x.Id,
-                Name = x.Name,
-                Price = x.Price,
-                CategoryId = x.CategoryId,
-            }).ToList();
+                result = await _productRepository.GetAll().ToListAsync();
+
+                return result;
+            }
+
+            IQueryable<Product> products = _productRepository.GetAll();
+
+            if(sort.Name != null)
+            {
+                products = products.Where(x => x.Name.ToLower().Contains(sort.Name.ToLower()));
+            }
+
+            if(sort.CategoryId != null)
+            {
+                products = products.Where(x => x.CategoryId == sort.CategoryId);
+            }
+
+            if(sort.OrderType != null && sort.OrderBy != null)
+            {
+                if(sort.OrderType == OrderType.Ascending)
+                {
+                    if (sort.OrderBy == OrderByType.Name)
+                    {
+                        products = products.OrderBy(x => x.Name);
+                    }
+                    else
+                    {
+                        products = products.OrderBy(x => x.CategoryId);
+                    }
+                }
+                else
+                {
+                    if (sort.OrderBy == OrderByType.Name)
+                    {
+                        products = products.OrderByDescending(x => x.Name);
+                    }
+                    else
+                    {
+                        products = products.OrderByDescending(x => x.CategoryId);
+                    }
+                }
+            }
+
+            result = await products.ToListAsync();
 
             return result;
         }
 
-        public async Task<GeneralProductModel> GetByIdAsync(int id)
+        public async Task<Product> GetByIdAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
 
-            if(product == null)
-            {
-                return null;
-            }
-
-            var result = new GeneralProductModel
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Price = product.Price,
-                CategoryId = product.CategoryId,
-            };
-
-            return result;
+            return product;
         }
 
-        public async Task<ProductResponse> AddAsync(CreateProductModel model)
+        public async Task<Response> CreateAsync(CreateProductModel model)
         {
-            var result = new ProductResponse();
+            var response = new Response();
 
             if(!CategoryIsValid(model.CategoryId).Result)
             {
-                result = new ProductResponse(false, Messages.ProductCategoryInvalid);
+                response = new Response(false, Messages.ProductCategoryInvalid);
 
-                return result;
+                return response;
             }
 
             var product = new Product
@@ -72,87 +102,60 @@ namespace MentorMate.Restaurant.Business.Services
 
             await _productRepository.AddAsync(product);
 
-            result = new ProductResponse(
-                true,
-                Messages.ProductCreated,
-                new GeneralProductModel
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Price = product.Price,
-                    CategoryId = product.CategoryId,
-                });
+            response = new Response(true, Messages.ProductCreated);
 
-            return result;
+            return response;
         }
 
-        public async Task<ProductResponse> UpdateAsync(UpdateProductModel model)
+        public async Task<Response> UpdateAsync(int productId, UpdateProductModel model)
         {
-            var result = new ProductResponse();
+            var response = new Response();
 
-            var existingProduct = await _productRepository.GetByIdAsync(model.Id);
+            var product = await _productRepository.GetByIdAsync(productId);
 
-            if(existingProduct == null)
+            if(product == null)
             {
-                result = new ProductResponse(false, Messages.ProductNotFound);
+                response = new Response(false, Messages.ProductNotFound);
 
-                return result;
+                return response;
             }
 
             if(model.CategoryId != null && !CategoryIsValid(model.CategoryId ?? 0).Result)
             {
-                result = new ProductResponse(false, Messages.ProductCategoryInvalid);
+                response = new Response(false, Messages.ProductCategoryInvalid);
 
-                return result;
+                return response;
             }
 
-            existingProduct.Name = model.Name ?? existingProduct.Name;
-            existingProduct.CategoryId = model.CategoryId ?? existingProduct.CategoryId;
-            existingProduct.Price = model.Price ?? existingProduct.Price;
+            product.Name = model.Name ?? product.Name;
+            product.CategoryId = model.CategoryId ?? product.CategoryId;
+            product.Price = model.Price ?? product.Price;
 
-            await _productRepository.UpdateAsync(existingProduct);
+            await _productRepository.UpdateAsync(product);
 
-            result = new ProductResponse(
-                true,
-                Messages.ProductUpdated,
-                new GeneralProductModel
-                {
-                    Id = existingProduct.Id,
-                    Name = existingProduct.Name,
-                    Price = existingProduct.Price,
-                    CategoryId = existingProduct.CategoryId
-                });
+            response = new Response(true, Messages.ProductUpdated);
 
-            return result;
+            return response;
         }
 
-        public async Task<ProductResponse> DeleteAsync(int id)
+        public async Task<Response> DeleteAsync(int id)
         {
-            var result = new ProductResponse();
+            var response = new Response();
 
             var product = await _productRepository.GetByIdAsync(id);
 
             if(product == null)
             {
-                result = new ProductResponse(false, Messages.ProductNotFound);
+                response = new Response(false, Messages.ProductNotFound);
 
-                return result;
+                return response;
             }
 
             await _productRepository.DeleteAsync(product);
 
-            result = new ProductResponse(
-                true,
-                Messages.ProductDeleted,
-                new GeneralProductModel
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    CategoryId = product.CategoryId,
-                    Price = product.Price,
-                });
+            response = new Response(true, Messages.ProductDeleted);
 
-            return result;
+            return response;
         }
 
         private async Task<bool> CategoryIsValid(int categoryId) =>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MentorMate.Restaurant.Data.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20220302122626_initial")]
-    partial class initial
+    [Migration("20220303202552_initil")]
+    partial class initil
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -364,8 +364,9 @@ namespace MentorMate.Restaurant.Data.Migrations
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Category", b =>
                 {
                     b.HasOne("MentorMate.Restaurant.Data.Entities.Category", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId");
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Parent");
                 });
@@ -481,6 +482,8 @@ namespace MentorMate.Restaurant.Data.Migrations
 
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Category", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("Products");
                 });
 

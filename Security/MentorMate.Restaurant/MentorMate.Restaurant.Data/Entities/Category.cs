@@ -10,9 +10,9 @@ namespace MentorMate.Restaurant.Data.Entities
         [Required, MaxLength(100)]
         public string? Name { get; set; }
         public int? ParentId { get; set; }
-
         [ForeignKey("ParentId")]
-        public virtual Category Parent { get; set; }
+        public virtual Category? Parent { get; set; }
+        public virtual ICollection<Category> Children { get; set; }
         public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

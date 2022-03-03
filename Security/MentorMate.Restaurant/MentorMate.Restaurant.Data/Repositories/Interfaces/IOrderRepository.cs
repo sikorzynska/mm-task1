@@ -4,9 +4,9 @@ namespace MentorMate.Restaurant.Data.Repositories.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<Order>> GetAllAsync();
+        IQueryable<Order> GetAll();
         Task<Order> GetByIdAsync(int id);
-        Task AddAsync(Order order);
+        Task CreateAsync(Order order);
         Task DeleteAsync(Order order);
         Task UpdateAsync(Order order);
     }

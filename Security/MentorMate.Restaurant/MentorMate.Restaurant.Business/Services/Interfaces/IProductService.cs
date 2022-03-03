@@ -1,13 +1,16 @@
-﻿using MentorMate.Restaurant.Domain.Models.Products;
+﻿using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Domain.Models.General;
+using MentorMate.Restaurant.Domain.Models.Products;
+using MentorMate.Restaurant.Domain.Models.Sorting;
 
 namespace MentorMate.Restaurant.Business.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<GeneralProductModel>> GetAllAsync();
-        Task<GeneralProductModel> GetByIdAsync(int id);
-        Task<ProductResponse> AddAsync(CreateProductModel model);
-        Task<ProductResponse> DeleteAsync(int id);
-        Task<ProductResponse> UpdateAsync(UpdateProductModel model);
+        Task<IEnumerable<Product>> GetAllAsync(ProductSortingModel sort);
+        Task<Product> GetByIdAsync(int id);
+        Task<Response> CreateAsync(CreateProductModel model);
+        Task<Response> DeleteAsync(int id);
+        Task<Response> UpdateAsync(int productId, UpdateProductModel model);
     }
 }

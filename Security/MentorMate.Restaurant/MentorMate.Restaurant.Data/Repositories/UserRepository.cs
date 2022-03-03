@@ -15,8 +15,7 @@ namespace MentorMate.Restaurant.Data.Repositories
         }
 
         //Get all
-        public async Task<IEnumerable<User>> GetAllAsync() =>
-            await _dbContext.Users.ToListAsync();
+        public IQueryable<User> GetAll() => _dbContext.Users;
 
         //Get by id
         public async Task<User> GetByIdAsync(string id) =>
@@ -27,7 +26,7 @@ namespace MentorMate.Restaurant.Data.Repositories
             await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
 
         //Add
-        public async Task AddUserAsync(User user, string password, string role)
+        public async Task CreateAsync(User user, string password, string role)
         {
             await _userManager.CreateAsync(user, password);
 
@@ -38,7 +37,7 @@ namespace MentorMate.Restaurant.Data.Repositories
             
 
         //Update
-        public async Task UpdateUserAsync(User user, string password = null, string role = null)
+        public async Task UpdateAsync(User user, string password = null, string role = null)
         {
             if (password != null)
             {
@@ -61,7 +60,7 @@ namespace MentorMate.Restaurant.Data.Repositories
         }
 
         //Delete
-        public async Task DeleteUserAsync(User user) 
+        public async Task DeleteAsync(User user) 
         {
             await _userManager.DeleteAsync(user);
 

@@ -1,6 +1,6 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Misc;
-using MentorMate.Restaurant.Data.Repositories.Interfaces;
+using MentorMate.Restaurant.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +13,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
     {
         private readonly IOrderService _orderService;
 
-        public OrdersController(IOrderService orderService, IOrderRepository orderRepo)
+        public OrdersController(IOrderService orderService)
         {
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
@@ -29,7 +29,9 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound();
             }
 
-            return Ok(orders);
+            var response = Mapper.MapOrderCollection(orders);
+
+            return Ok(response);
         }
 
         [HttpGet("{orderId}")]
@@ -43,7 +45,9 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound();
             }
 
-            return Ok(order);
+            var response = Mapper.MapOrder(order);
+
+            return Ok(response);
         }
 
         [HttpDelete("{orderId}")]
@@ -52,7 +56,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         {
             var response = await _orderService.DeleteAsync(orderId);
 
-            if (!response.Result)
+            if (!response.Success)
             {
                 return NotFound(response);
             }

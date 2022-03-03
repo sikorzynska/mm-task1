@@ -1,30 +1,24 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Entities;
 using MentorMate.Restaurant.Data.Entities.Enums;
-using MentorMate.Restaurant.Data.Misc;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using MentorMate.Restaurant.Domain.Consts;
+using MentorMate.Restaurant.Domain.Models.General;
 using MentorMate.Restaurant.Domain.Models.Orders;
-using MentorMate.Restaurant.Domain.Models.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Business.Services
 {
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ITableRepository _tableRepository;
-        private readonly IProductRepository _productRepository;
 
-        public OrderService(IOrderRepository orderRepository, 
-            IProductRepository productRepository,
-            ITableRepository tableRepository)
+        public OrderService(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
-            _productRepository = productRepository;
-            _tableRepository = tableRepository;
         }
 
-        public async Task<OrderResponse> CompleteAsync(string waiterId, int orderId, bool isAdmin = false)
+        public async Task<Response> CompleteAsync(string waiterId, int orderId, bool isAdmin = false)
         {
             throw new ArgumentException();
             //var result = new OrderResponse();
@@ -88,7 +82,7 @@ namespace MentorMate.Restaurant.Business.Services
 
         }
 
-        public async Task<OrderResponse> CreateAsync(string waiterId, CreateOrderModel model)
+        public async Task<Response> CreateAsync(string waiterId, CreateOrderModel model)
         {
             throw new ArgumentException(nameof(model));
             //var result = new OrderResponse();
@@ -165,151 +159,54 @@ namespace MentorMate.Restaurant.Business.Services
             //return result;
         }
 
-        public async Task<OrderResponse> DeleteAsync(int id)
+        public async Task<Response> DeleteAsync(int id)
         {
-            var result = new OrderResponse();
+            var response = new Response();
 
             var order = await _orderRepository.GetByIdAsync(id);
 
             if (order == null)
             {
-                result = new OrderResponse(false, Messages.OrderNotFound);
+                response = new Response(false, Messages.OrderNotFound);
 
-                return result;
+                return response;
             }
 
             await _orderRepository.DeleteAsync(order);
 
-            result = new OrderResponse(true, Messages.OrderDeleted,
-                new GeneralOrderModel
-                {
-                    Id = order.Id,
-                    TableId = order.TableId,
-                    Waiter = order.Waiter.FirstName + " " + order.Waiter.LastName,
-                    DateTime = order.DateTime.ToString("dddd, dd MMMM yyyy"),
-                    Status = order.Status.ToString(),
-                    Price = OrderTotalPrice(order).Result,
-                    Products = OrderProductModelList(order).Result,
-                });
+            response = new Response(true, Messages.OrderDeleted);
+
+            return response;
+        }
+
+        public async Task<IEnumerable<Order>> GetActiveAsync()
+        {
+            var result = await _orderRepository.GetAll()
+                .Where(x => x.Status == OrderStatus.Active)
+                .Include(x => x.Waiter)
+                .Include(x => x.OrderProducts)
+                .ThenInclude(x => x.Product)
+                .ToListAsync();
 
             return result;
         }
 
-        public async Task<IEnumerable<GeneralOrderModel>> GetActiveAsync()
+        public async Task<IEnumerable<Order>> GetAllAsync()
         {
-            var orders = await _orderRepository.GetAllAsync();
-
-            var result = orders.Where(x => x.Status == OrderStatus.Active)
-                .Select(o => new GeneralOrderModel
-            {
-                Id = o.Id,
-                TableId = o.TableId,
-                Waiter = o.Waiter.FirstName + " " + o.Waiter.LastName,
-                DateTime = o.DateTime.ToString("dddd, dd MMMM yyyy"),
-                Status = o.Status.ToString(),
-                Price = OrderTotalPrice(o).Result,
-                Products = OrderProductModelList(o).Result,
-            }).ToList();
+            var result = await _orderRepository.GetAll()
+                .Include(x => x.Waiter)
+                .Include(x => x.OrderProducts)
+                .ThenInclude(x => x.Product)
+                .ToListAsync();
 
             return result;
         }
 
-        public async Task<IEnumerable<GeneralOrderModel>> GetAllAsync()
+        public async Task<Order> GetByIdAsync(int id)
         {
-            var orders = await _orderRepository.GetAllAsync();
-
-            var result = orders.Select(o => new GeneralOrderModel
-            {
-                Id = o.Id,
-                TableId = o.TableId,
-                Waiter = o.Waiter.FirstName + " " + o.Waiter.LastName,
-                DateTime = o.DateTime.ToString("dddd, dd MMMM yyyy"),
-                Status = o.Status.ToString(),
-                Price = OrderTotalPrice(o).Result,
-                Products = OrderProductModelList(o).Result,
-            }).ToList();
+            var result = await _orderRepository.GetByIdAsync(id);
 
             return result;
         }
-
-        public async Task<GeneralOrderModel> GetByIdAsync(int id)
-        {
-            var order = await _orderRepository.GetByIdAsync(id);
-
-            if(order == null)
-            {
-                return null;
-            }
-
-            var result = new GeneralOrderModel
-            {
-                Id = order.Id,
-                TableId = order.TableId,
-                Waiter = order.Waiter.FirstName + " " + order.Waiter.LastName,
-                DateTime = order.DateTime.ToString("dddd, dd MMMM yyyy"),
-                Status = order.Status.ToString(),
-                Price = OrderTotalPrice(order).Result,
-                Products = OrderProductModelList(order).Result,
-            };
-
-            return result;
-        }
-
-        #region inner functions
-        //Inner function for getting the total price of an order
-        private async Task<decimal> OrderTotalPrice(Order order)
-        {
-            //Get the order's OrderProducts
-            var orderProducts = order.OrderProducts;
-
-            //Initialize new decimal variable
-            var orderPrice = 0m;
-
-            //Foreach loop to calculate the price of each OrderProduct
-            foreach (var op in orderProducts)
-            {
-                //Multiply the product's price by the product quantity to get the total
-                var totalProductPrice = op.ProductPrice * op.ProductCount;
-
-                //Add the product total to the order total
-                orderPrice += totalProductPrice;
-            }
-
-            //Return order total
-            return orderPrice;
-        }
-
-        //Inner function for getting a collection of OrderProductModel of a particular order
-        private async Task<List<OrderProductModel>> OrderProductModelList(Order order)
-        {
-            //Initialize a new list of OrderProductModel
-            var opmList = new List<OrderProductModel>();
-
-            //Get the order's OrderProducts
-            var orderProducts = order.OrderProducts;
-
-            //Foreach loop to convert all OrderProducts to OrderProductModels and fill up the opmList
-            foreach (var op in orderProducts)
-            {
-                //Get the particular product so we can access it's properties
-                var product = await _productRepository.GetByIdAsync(op.ProductId);
-
-                //Create a new OrderProductModel
-                var opm = new OrderProductModel
-                {
-                    Name = product.Name,
-                    Quantity = op.ProductCount,
-                    Price = op.ProductPrice,
-                    TotalPrice = product.Price * op.ProductCount,
-                };
-
-                //Add the OPM to the list
-                opmList.Add(opm);
-            }
-
-            //Return the result
-            return opmList;
-        }
-        #endregion
     }
 }

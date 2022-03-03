@@ -1,6 +1,7 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Misc;
 using MentorMate.Restaurant.Domain.Models.Categories;
+using MentorMate.Restaurant.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,9 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound();
             }
 
-            return Ok(categories);
+            var response = Mapper.MapCategoryCollection(categories);
+
+            return Ok(response);
         }
 
         [HttpGet("{categoryId}")]
@@ -43,7 +46,9 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound();
             }
 
-            return Ok(category);
+            var response = Mapper.MapCategory(category);
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -55,9 +60,9 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var response = await _categoryService.AddAsync(model);
+            var response = await _categoryService.CreateAsync(model);
 
-            if (!response.Result)
+            if (!response.Success)
             {
                 return BadRequest(response);
             }
@@ -65,18 +70,18 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
+        [HttpPut("{categoryId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> UpdateCategory([FromForm] UpdateCategoryModel model)
+        public async Task<IActionResult> UpdateCategory([FromRoute] int categoryId, [FromForm] UpdateCategoryModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var response = await _categoryService.UpdateAsync(model);
+            var response = await _categoryService.UpdateAsync(categoryId, model);
 
-            if (!response.Result)
+            if (!response.Success)
             {
                 return BadRequest(response);
             }
@@ -90,7 +95,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         {
             var response = await _categoryService.DeleteAsync(categoryId);
 
-            if (!response.Result)
+            if (!response.Success)
             {
                 return NotFound(response);
             }

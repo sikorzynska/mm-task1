@@ -5,8 +5,6 @@ namespace MentorMate.Restaurant.Domain.Models.Users
 {
     public class UpdateUserModel
     {
-        [Required]
-        public string? Id { get; set; }
 
         [MaxLength(100, ErrorMessage = Messages.UserNameLength)]
         public string? FirstName { get; set; }

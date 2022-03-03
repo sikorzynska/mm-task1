@@ -1,6 +1,8 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Misc;
 using MentorMate.Restaurant.Domain.Models.Products;
+using MentorMate.Restaurant.Domain.Models.Sorting;
+using MentorMate.Restaurant.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +10,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -20,16 +22,18 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts([FromQuery] ProductSortingModel sort)
         {
-            var products = await _productService.GetAllAsync();
+            var products = await _productService.GetAllAsync(sort);
 
             if (!products.Any())
             {
                 return NotFound();
             }
 
-            return Ok(products);
+            var response = Mapper.MapProductCollection(products);
+
+            return Ok(response);
         }
 
         [HttpGet("{productId}")]
@@ -43,7 +47,9 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound();
             }
 
-            return Ok(product);
+            var response = Mapper.MapProduct(product);
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -55,9 +61,9 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var response = await _productService.AddAsync(model);
+            var response = await _productService.CreateAsync(model);
 
-            if (!response.Result)
+            if (!response.Success)
             {
                 return BadRequest(response);
             }
@@ -65,18 +71,18 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
+        [HttpPut("{productId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductModel model)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int productId, [FromForm] UpdateProductModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var response = await _productService.UpdateAsync(model);
+            var response = await _productService.UpdateAsync(productId, model);
 
-            if (!response.Result)
+            if (!response.Success)
             {
                 return BadRequest(response);
             }
@@ -90,7 +96,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         {
             var response = await _productService.DeleteAsync(productId);
 
-            if (!response.Result)
+            if (!response.Success)
             {
                 return NotFound(response);
             }

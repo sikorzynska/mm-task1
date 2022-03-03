@@ -4,7 +4,7 @@ namespace MentorMate.Restaurant.Data.Repositories.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAllAsync();
+        IQueryable<Product> GetAll();
         Task<Product> GetByIdAsync(int id);
         Task AddAsync(Product product);
         Task DeleteAsync(Product product);

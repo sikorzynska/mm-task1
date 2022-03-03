@@ -11,8 +11,7 @@ namespace MentorMate.Restaurant.Data.Repositories
         }
 
         //Get all
-        public async Task<IEnumerable<Product>> GetAllAsync() =>
-            await _dbContext.Products.ToListAsync();
+        public IQueryable<Product> GetAll() => _dbContext.Products;
 
         //Get by id
         public async Task<Product> GetByIdAsync(int id) =>

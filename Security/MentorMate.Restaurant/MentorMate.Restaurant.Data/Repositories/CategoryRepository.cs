@@ -11,15 +11,14 @@ namespace MentorMate.Restaurant.Data.Repositories
         }
 
         //Get all
-        public async Task<IEnumerable<Category>> GetAllAsync() =>
-            await _dbContext.Categories.ToListAsync();
+        public IQueryable<Category> GetAll() => _dbContext.Categories;
 
         //Get by id
         public async Task<Category> GetByIdAsync(int id) =>
             await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
 
         //Add
-        public async Task AddAsync(Category category)
+        public async Task CreateAsync(Category category)
         {
             await _dbContext.Categories.AddAsync(category);
 

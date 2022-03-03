@@ -29,22 +29,23 @@ namespace MentorMate.Restaurant.Business.Services
 
         public async Task<IEnumerable<GeneralTableModel>> GetAllAsync()
         {
-            var tables = await _tableRepository.GetAllAsync();
+            throw new NotImplementedException();
+            //var tables = await _tableRepository.GetAllAsync();
 
-            var result = tables.Select(x => new GeneralTableModel
-            {
-                Id = x.Id,
-                Status = x.Status.ToString(),
-                Capacity = x.Capacity,
-                Waiter = x.Status == TableStatus.Active
-                ? x.Waiter.FirstName + " " + x.Waiter.LastName
-                : "N/A",
-                Bill = x.Status == TableStatus.Active
-                ? CalculateTableBill(x.Id).Result.ToString()
-                : "0 BGN",
-            }).ToList();
+            //var result = tables.Select(x => new GeneralTableModel
+            //{
+            //    Id = x.Id,
+            //    Status = x.Status.ToString(),
+            //    Capacity = x.Capacity,
+            //    Waiter = x.Status == TableStatus.Active
+            //    ? x.Waiter.FirstName + " " + x.Waiter.LastName
+            //    : "N/A",
+            //    Bill = x.Status == TableStatus.Active
+            //    ? CalculateTableBill(x.Id).Result.ToString()
+            //    : "0 BGN",
+            //}).ToList();
 
-            return result;
+            //return result;
         }
 
         public Task<GeneralTableModel> GetByIdAsync(int tableId)
@@ -73,16 +74,16 @@ namespace MentorMate.Restaurant.Business.Services
         }
 
         #region inner functions
-        private async Task<decimal> CalculateTableBill(int tableId)
-        {
-            var orders = await _orderRepository.GetAllAsync();
+        //private async Task<decimal> CalculateTableBill(int tableId)
+        //{
+        //    var orders = await _orderRepository.GetAll();
 
-            var activeOrders = orders.Where(x => x.TableId == tableId && x.Status == OrderStatus.Active).ToList();
+        //    var activeOrders = orders.Where(x => x.TableId == tableId && x.Status == OrderStatus.Active).ToList();
 
-            var result = activeOrders.SelectMany(x => x.OrderProducts.Select(v => v.ProductPrice * v.ProductCount)).Sum();
+        //    var result = activeOrders.SelectMany(x => x.OrderProducts.Select(v => v.ProductPrice * v.ProductCount)).Sum();
 
-            return result;
-        }
+        //    return result;
+        //}
         #endregion
     }
 }

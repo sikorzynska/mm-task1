@@ -8,5 +8,7 @@ namespace MentorMate.Restaurant.Domain.Models.Categories
         [Required(ErrorMessage = Messages.CategoryNameRequired)]
         [MaxLength(100, ErrorMessage = Messages.CategoryNameLength)]
         public string Name { get; set; }
+
+        public int? ParentId { get; set; }
     }
 }

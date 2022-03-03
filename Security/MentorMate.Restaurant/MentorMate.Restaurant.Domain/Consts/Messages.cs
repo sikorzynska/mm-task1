@@ -39,6 +39,7 @@
         public const string CategoryUpdated = "Category successfully updated";
         public const string CategoryDeleted = "Category successfully deleted";
         public const string CategoryNotFound = "Category not found";
+        public const string CategoryParentInvalidId = "Invalid parent category ID";
         //Name
         public const string CategoryNameRequired = "Category name is required";
         public const string CategoryNameLength = "Category name must not exceed 100 characters";

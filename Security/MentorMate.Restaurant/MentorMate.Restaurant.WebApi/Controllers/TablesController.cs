@@ -7,7 +7,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     //[Authorize]
-    public class TablesController : Controller
+    public class TablesController : ControllerBase
     {
         private readonly ITableService _tableService;
 

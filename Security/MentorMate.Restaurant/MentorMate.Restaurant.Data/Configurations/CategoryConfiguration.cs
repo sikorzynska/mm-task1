@@ -10,6 +10,11 @@ namespace MentorMate.Restaurant.Data.Configurations
         {
             builder.ToTable("Categories");
 
+            builder.HasOne(x => x.Parent)
+                .WithMany(x => x.Children)
+                .HasForeignKey(x => x.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(c => c.Products)
                 .WithOne(p => p.Category);
         }
