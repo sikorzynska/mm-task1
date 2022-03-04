@@ -16,7 +16,7 @@ namespace MentorMate.Restaurant.Data.Entities
         [ForeignKey("WaiterId")]
         public User Waiter { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Active;
-        public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
     }
 }

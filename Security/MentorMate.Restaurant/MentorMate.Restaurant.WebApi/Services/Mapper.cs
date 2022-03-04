@@ -1,7 +1,9 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Data.Entities.Enums;
 using MentorMate.Restaurant.Domain.Models.Categories;
 using MentorMate.Restaurant.Domain.Models.Orders;
 using MentorMate.Restaurant.Domain.Models.Products;
+using MentorMate.Restaurant.Domain.Models.Tables;
 using MentorMate.Restaurant.Domain.Models.Users;
 
 namespace MentorMate.Restaurant.WebApi.Services
@@ -79,15 +81,15 @@ namespace MentorMate.Restaurant.WebApi.Services
 
         #region order
         public static IEnumerable<GeneralOrderModel> MapOrderCollection(IEnumerable<Order> orders) =>
-            orders.Select(o => new GeneralOrderModel
+            orders.Select(x => new GeneralOrderModel
             {
-                Id = o.Id,
-                TableId = o.TableId,
-                Waiter = o.Waiter.FirstName + " " + o.Waiter.LastName,
-                DateTime = o.DateTime.ToString("dddd, dd MMMM yyyy"),
-                Status = o.Status.ToString(),
-                Price = o.OrderProducts.Select(x => x.ProductPrice * x.ProductCount).Sum(),
-                Products = o.OrderProducts.Select(x => new OrderProductModel
+                Id = x.Id,
+                TableId = x.TableId,
+                Waiter = x.Waiter.FirstName + " " + x.Waiter.LastName,
+                DateTime = x.DateTime.ToString("dddd, dd MMMM yyyy"),
+                Status = x.Status.ToString(),
+                Price = x.OrderProducts.Select(x => x.ProductPrice * x.ProductCount).Sum(),
+                Products = x.OrderProducts.Select(x => new OrderProductModel
                 {
                     Name = x.Product.Name,
                     Quantity = x.ProductCount,
@@ -112,6 +114,36 @@ namespace MentorMate.Restaurant.WebApi.Services
                     Price = x.ProductPrice,
                     TotalPrice = x.ProductPrice * x.ProductCount,
                 }).ToList(),
+            };
+        #endregion
+
+        #region table
+         public static IEnumerable<GeneralTableModel> MapTableCollection(IEnumerable<Table> tables) =>
+            tables.Select(x => new GeneralTableModel
+            {
+                Id = x.Id,
+                Status = x.Status.ToString(),
+                Capacity = x.Capacity,
+                Waiter = x.Status == TableStatus.Active
+                ? x.Waiter.FirstName + " " + x.Waiter.LastName
+                : "N/A",
+                Bill = x.Status == TableStatus.Active
+                ? x.Orders.SelectMany(x => x.OrderProducts.Select(v => v.ProductPrice * v.ProductCount)).Sum().ToString()
+                : "0 BGN",
+            }).ToList();
+
+        public static GeneralTableModel MapTable(Table table) =>
+            new GeneralTableModel
+            {
+                Id = table.Id,
+                Status = table.Status.ToString(),
+                Capacity = table.Capacity,
+                Waiter = table.Status == TableStatus.Active
+                ? table.Waiter.FirstName + " " + table.Waiter.LastName
+                : "N/A",
+                Bill = table.Status == TableStatus.Active
+                ? table.Orders.SelectMany(x => x.OrderProducts.Select(v => v.ProductPrice * v.ProductCount)).Sum().ToString()
+                : "0 BGN",
             };
         #endregion
     }

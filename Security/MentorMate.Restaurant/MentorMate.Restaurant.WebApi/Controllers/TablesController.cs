@@ -1,4 +1,5 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
+using MentorMate.Restaurant.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,37 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound();
             }
 
-            return Ok(tables);
+            var response = Mapper.MapTableCollection(tables);
+
+            return Ok(response);
+        }
+
+        [HttpGet("{tableId}")]
+        public async Task<IActionResult> GetById(int tableId)
+        {
+            var table = await _tableService.GetByIdAsync(tableId);
+
+            if(table == null)
+            {
+                return NotFound();
+            }
+
+            var response = Mapper.MapTable(table);
+
+            return Ok(response);
+        }
+
+        [HttpPatch("{tableId}")]
+        public async Task<IActionResult> Clear(int tableId)
+        {
+            var response = await _tableService.ClearAsync(tableId);
+
+            if(!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
         }
     }
 }

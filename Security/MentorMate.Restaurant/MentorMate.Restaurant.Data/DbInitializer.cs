@@ -1,4 +1,5 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Data.Entities.Enums;
 using MentorMate.Restaurant.Data.Misc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,9 +41,9 @@ namespace MentorMate.Restaurant.Data
         {
             await SeedCategoriesAsync();
             await SeedProductsAsync();
-            await SeedTablesAsync();
             await SeedRolesAsync();
             await SeedUsersAsync();
+            await SeedTablesAsync();
             await SeedOrdersAsync();
             await SeedOrderProductsAsync();
         }
@@ -139,15 +140,25 @@ namespace MentorMate.Restaurant.Data
                 return;
             }
 
+            var waiterId = _userManager.GetUsersInRoleAsync(UserRoles.Waiter).Result.FirstOrDefault().Id;
+
             var tables = new List<Table>();
 
             var rnd = new Random();
 
             for (int i = 0; i < 10; i++)
             {
+                var isActive = rnd.Next(1, 3) == 1;
+
                 tables.Add(new Table
                 {
-                    Capacity = rnd.Next(2, 13)
+                    Capacity = rnd.Next(2, 13),
+                    Status = isActive 
+                    ? TableStatus.Active
+                    : TableStatus.Free,
+                    WaiterId = isActive 
+                    ? waiterId
+                    : null
                 });
             }
 

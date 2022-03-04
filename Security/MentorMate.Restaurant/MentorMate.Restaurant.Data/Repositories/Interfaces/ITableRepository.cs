@@ -4,9 +4,9 @@ namespace MentorMate.Restaurant.Data.Repositories.Interfaces
 {
     public interface ITableRepository
     {
-        Task<IEnumerable<Table>> GetAllAsync();
+        IQueryable<Table> GetAll();
         Task<Table> GetByIdAsync(int id);
-        Task AddAsync(Table table);
+        Task CreateAsync(Table table);
         Task DeleteAsync(Table table);
         Task UpdateAsync(Table table);
 

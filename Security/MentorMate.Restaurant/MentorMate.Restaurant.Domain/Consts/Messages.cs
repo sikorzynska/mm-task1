@@ -79,6 +79,15 @@
         #endregion
 
         #region table
+        //General
+        public const string TableCreated = "Table successfully created";
+        public const string TableUpdated = "Table successfully updated";
+        public const string TableDeleted = "Table successfully deleted";
+        public const string TableNotFound = "Table not found";
+        public const string TableNotActive = "Table is not active/occupied";
+        public const string TableNoOrders = "Table doesn't have any orders";
+        public const string TableCleared = "Table successfully cleared";
+        //Id
         public const string TableInvalidId = "Invalid table ID";
         #endregion
     }

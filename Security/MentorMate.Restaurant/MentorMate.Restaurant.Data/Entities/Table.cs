@@ -11,6 +11,6 @@ namespace MentorMate.Restaurant.Data.Entities
         public int Capacity { get; set; }
         public string? WaiterId { get; set; }
         public User? Waiter { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

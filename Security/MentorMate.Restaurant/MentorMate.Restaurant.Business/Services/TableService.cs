@@ -1,74 +1,94 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
+using MentorMate.Restaurant.Data.Entities;
 using MentorMate.Restaurant.Data.Entities.Enums;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
+using MentorMate.Restaurant.Domain.Consts;
+using MentorMate.Restaurant.Domain.Models.General;
 using MentorMate.Restaurant.Domain.Models.Tables;
+using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Business.Services
 {
     public class TableService : ITableService
     {
         private readonly ITableRepository _tableRepository;
-        private readonly IOrderRepository _orderRepository;
 
-        public TableService(ITableRepository tableRepository,
-            IOrderRepository orderRepository)
+        public TableService(ITableRepository tableRepository)
         {
             _tableRepository = tableRepository;
-            _orderRepository = orderRepository;
         }
 
-        public Task<TableResponse> AssignWaiterAsync(int tableId, string waiterId)
+        public Task<Response> AssignWaiterAsync(int tableId, string waiterId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TableResponse> CreateAsync()
+        public Task<Response> CreateAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<GeneralTableModel>> GetAllAsync()
+        public async Task<IEnumerable<Table>> GetAllAsync()
         {
-            throw new NotImplementedException();
-            //var tables = await _tableRepository.GetAllAsync();
+            var result = await _tableRepository.GetAll()
+                .Include(x => x.Waiter)
+                .Include(x => x.Orders.Where(o => o.Status == OrderStatus.Active))
+                .ThenInclude(x => x.OrderProducts)
+                .ThenInclude(x => x.Product)
+                .ToListAsync();
 
-            //var result = tables.Select(x => new GeneralTableModel
-            //{
-            //    Id = x.Id,
-            //    Status = x.Status.ToString(),
-            //    Capacity = x.Capacity,
-            //    Waiter = x.Status == TableStatus.Active
-            //    ? x.Waiter.FirstName + " " + x.Waiter.LastName
-            //    : "N/A",
-            //    Bill = x.Status == TableStatus.Active
-            //    ? CalculateTableBill(x.Id).Result.ToString()
-            //    : "0 BGN",
-            //}).ToList();
-
-            //return result;
+            return result;
         }
 
-        public Task<GeneralTableModel> GetByIdAsync(int tableId)
+        public async Task<Table> GetByIdAsync(int tableId)
         {
-            throw new NotImplementedException();
+            var result = await _tableRepository.GetByIdAsync(tableId);
+
+            return result;
         }
 
-        public Task<TableResponse> OccupyAsync(int tableId)
+        public Task<Response> OccupyAsync(int tableId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TableResponse> PayBillAsync(int tableId)
+        public async Task<Response> ClearAsync(int tableId)
+        {
+            var response = new Response();
+
+            var table = await _tableRepository.GetByIdAsync(tableId);
+
+            if(table == null)
+            {
+                response = new Response(false, Messages.TableNotFound);
+
+                return response;
+            }
+
+            if(table.Status != TableStatus.Active)
+            {
+                response = new Response(false, Messages.TableNotActive);
+
+                return response;
+            }
+
+            table.Status = TableStatus.Free;
+
+            table.Orders.ToList().ForEach(x => x.Status = OrderStatus.Complete);
+
+            await _tableRepository.UpdateAsync(table);
+
+            response = new Response(true, Messages.TableCleared);
+
+            return response;
+        }
+
+        public Task<Response> RemoveAsync(int tableId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TableResponse> RemoveAsync(int tableId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TableResponse> WaitAsync(int tableId, string waiterId)
+        public Task<Response> WaitAsync(int tableId, string waiterId)
         {
             throw new NotImplementedException();
         }

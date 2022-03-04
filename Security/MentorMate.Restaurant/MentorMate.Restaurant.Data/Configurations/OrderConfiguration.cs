@@ -12,7 +12,8 @@ namespace MentorMate.Restaurant.Data.Configurations
 
             // one-to-many relationship
             builder.HasOne(o => o.Table)
-                .WithMany(t => t.Orders);
+                .WithMany(t => t.Orders)
+                .HasForeignKey(o => o.TableId);
 
             builder.HasMany(o => o.OrderProducts)
                 .WithOne(op => op.Order)
