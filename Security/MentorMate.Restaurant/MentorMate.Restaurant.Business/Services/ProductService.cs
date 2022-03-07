@@ -5,8 +5,6 @@ using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.General;
 using MentorMate.Restaurant.Domain.Models.Products;
 using MentorMate.Restaurant.Domain.Models.Sorting;
-using MentorMate.Restaurant.Domain.Models.Sorting.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Business.Services
 {
@@ -21,61 +19,10 @@ namespace MentorMate.Restaurant.Business.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync(ProductSortingModel sort)
-        {
-            var result = new List<Product>();
+        public async Task<ICollection<Product>> GetAllAsync(ProductSortingModel sort) =>
+            await _productRepository.GetAllAsync(sort);
 
-            if(sort == null)
-            {
-                result = await _productRepository.GetAll().ToListAsync();
-
-                return result;
-            }
-
-            IQueryable<Product> products = _productRepository.GetAll();
-
-            if(sort.Name != null)
-            {
-                products = products.Where(x => x.Name.ToLower().Contains(sort.Name.ToLower()));
-            }
-
-            if(sort.CategoryId != null)
-            {
-                products = products.Where(x => x.CategoryId == sort.CategoryId);
-            }
-
-            if(sort.OrderType != null && sort.OrderBy != null)
-            {
-                if(sort.OrderType == OrderType.Ascending)
-                {
-                    if (sort.OrderBy == OrderByType.Name)
-                    {
-                        products = products.OrderBy(x => x.Name);
-                    }
-                    else
-                    {
-                        products = products.OrderBy(x => x.CategoryId);
-                    }
-                }
-                else
-                {
-                    if (sort.OrderBy == OrderByType.Name)
-                    {
-                        products = products.OrderByDescending(x => x.Name);
-                    }
-                    else
-                    {
-                        products = products.OrderByDescending(x => x.CategoryId);
-                    }
-                }
-            }
-
-            result = await products.ToListAsync();
-
-            return result;
-        }
-
-        public async Task<Product> GetByIdAsync(int id)
+        public async Task<Product> GetByIdAsync(string id)
         {
             var product = await _productRepository.GetByIdAsync(id);
 
@@ -86,7 +33,7 @@ namespace MentorMate.Restaurant.Business.Services
         {
             var response = new Response();
 
-            if(!CategoryIsValid(model.CategoryId).Result)
+            if(!CategoryValidAsync(model.CategoryId).Result)
             {
                 response = new Response(false, Messages.ProductCategoryInvalid);
 
@@ -102,12 +49,12 @@ namespace MentorMate.Restaurant.Business.Services
 
             await _productRepository.AddAsync(product);
 
-            response = new Response(true, Messages.ProductCreated);
+            response = new Response(true, Messages.ProductCreated, product.Id);
 
             return response;
         }
 
-        public async Task<Response> UpdateAsync(int productId, UpdateProductModel model)
+        public async Task<Response> UpdateAsync(string productId, UpdateProductModel model)
         {
             var response = new Response();
 
@@ -120,7 +67,7 @@ namespace MentorMate.Restaurant.Business.Services
                 return response;
             }
 
-            if(model.CategoryId != null && !CategoryIsValid(model.CategoryId ?? 0).Result)
+            if(model.CategoryId != null && !CategoryValidAsync(model.CategoryId ?? string.Empty).Result)
             {
                 response = new Response(false, Messages.ProductCategoryInvalid);
 
@@ -138,7 +85,8 @@ namespace MentorMate.Restaurant.Business.Services
             return response;
         }
 
-        public async Task<Response> DeleteAsync(int id)
+        #region private functions
+        public async Task<Response> DeleteAsync(string id)
         {
             var response = new Response();
 
@@ -158,7 +106,8 @@ namespace MentorMate.Restaurant.Business.Services
             return response;
         }
 
-        private async Task<bool> CategoryIsValid(int categoryId) =>
+        private async Task<bool> CategoryValidAsync(string categoryId) =>
            await _categoryRepository.GetByIdAsync(categoryId) != null;
+        #endregion
     }
 }

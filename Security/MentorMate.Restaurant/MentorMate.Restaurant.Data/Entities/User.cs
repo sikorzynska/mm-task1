@@ -10,5 +10,6 @@ namespace MentorMate.Restaurant.Data.Entities
         [MaxLength(100)]
         public string? LastName { get; set; }
         public string? PictureURL { get; set; }
+        public virtual ICollection<Table> Tables { get; set; }
     }
 }

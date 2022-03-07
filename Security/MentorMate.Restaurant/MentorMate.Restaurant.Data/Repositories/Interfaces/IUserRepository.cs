@@ -4,7 +4,7 @@ namespace MentorMate.Restaurant.Data.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        IQueryable<User> GetAll();
+        Task<ICollection<User>> GetAllAsync(string currentUserId);
         Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);
         Task CreateAsync(User user, string password, string role);

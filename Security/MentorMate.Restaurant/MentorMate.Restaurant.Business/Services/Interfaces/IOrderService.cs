@@ -6,11 +6,10 @@ namespace MentorMate.Restaurant.Business.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task<IEnumerable<Order>> GetAllAsync();
-        Task<IEnumerable<Order>> GetActiveAsync();
-        Task<Order> GetByIdAsync(int id);
+        Task<ICollection<Order>> GetAllAsync(bool onlyActive = false);
+        Task<Order> GetByIdAsync(string id);
         Task<Response> CreateAsync(string waiterId, CreateOrderModel model);
-        Task<Response> DeleteAsync(int id);
-        Task<Response> CompleteAsync(string waiterId, int orderId, bool isAdmin = false);
+        Task<Response> DeleteAsync(string id);
+        Task<Response> CompleteAsync(string waiterId, string orderId, bool isAdmin = false);
     }
 }

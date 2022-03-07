@@ -1,6 +1,6 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Misc;
-using MentorMate.Restaurant.WebApi.Services;
+using MentorMate.Restaurant.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,13 +20,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetOrders()
+        public async Task<IActionResult> GetAll()
         {
             var orders = await _orderService.GetAllAsync();
 
             if (!orders.Any())
             {
-                return NotFound();
+                return NotFound(orders);
             }
 
             var response = Mapper.MapOrderCollection(orders);
@@ -36,13 +36,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpGet("{orderId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetOrder([FromRoute] int orderId)
+        public async Task<IActionResult> Get([FromRoute] string orderId)
         {
             var order = await _orderService.GetByIdAsync(orderId);
 
             if (order == null)
             {
-                return NotFound();
+                return NotFound(order);
             }
 
             var response = Mapper.MapOrder(order);
@@ -52,7 +52,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpDelete("{orderId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> DeleteProduct([FromRoute] int orderId)
+        public async Task<IActionResult> Delete([FromRoute] string orderId)
         {
             var response = await _orderService.DeleteAsync(orderId);
 

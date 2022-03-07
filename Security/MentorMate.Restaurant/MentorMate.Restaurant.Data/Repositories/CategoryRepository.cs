@@ -11,11 +11,12 @@ namespace MentorMate.Restaurant.Data.Repositories
         }
 
         //Get all
-        public IQueryable<Category> GetAll() => _dbContext.Categories;
+        public async Task<ICollection<Category>> GetAllAsync() => 
+            await _dbContext.Categories.Include(x => x.Children).Where(x => x.ParentId == null).ToListAsync();
 
         //Get by id
-        public async Task<Category> GetByIdAsync(int id) =>
-            await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<Category> GetByIdAsync(string id) =>
+            await _dbContext.Categories.Include(x => x.Children).FirstOrDefaultAsync(x => x.Id == id);
 
         //Add
         public async Task CreateAsync(Category category)
@@ -37,6 +38,14 @@ namespace MentorMate.Restaurant.Data.Repositories
         public async Task DeleteAsync(Category category)
         {
             _dbContext.Categories.Remove(category);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        //Update raneg
+        public async Task UpdateRangeAsync(ICollection<Category> categories)
+        {
+            _dbContext.Categories.UpdateRange(categories);
 
             await _dbContext.SaveChangesAsync();
         }

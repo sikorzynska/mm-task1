@@ -7,7 +7,7 @@ namespace MentorMate.Restaurant.Data.Entities
     public class Order
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public DateTime DateTime { get; set; } = DateTime.Now;
         public int TableId { get; set; }
         [ForeignKey("TableId")]

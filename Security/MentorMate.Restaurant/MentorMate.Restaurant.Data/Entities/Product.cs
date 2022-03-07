@@ -6,8 +6,8 @@ namespace MentorMate.Restaurant.Data.Entities
     public class Product
     {
         [Key]
-        public int Id { get; set; }
-        public int CategoryId { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string CategoryId { get; set; }
         public Category? Category { get; set; }
         [Required, MaxLength(100)]
         public string? Name { get; set; }

@@ -28,17 +28,8 @@ namespace MentorMate.Restaurant.Business.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Table>> GetAllAsync()
-        {
-            var result = await _tableRepository.GetAll()
-                .Include(x => x.Waiter)
-                .Include(x => x.Orders.Where(o => o.Status == OrderStatus.Active))
-                .ThenInclude(x => x.OrderProducts)
-                .ThenInclude(x => x.Product)
-                .ToListAsync();
-
-            return result;
-        }
+        public async Task<ICollection<Table>> GetAllAsync() =>
+            await _tableRepository.GetAllAsync();
 
         public async Task<Table> GetByIdAsync(int tableId)
         {

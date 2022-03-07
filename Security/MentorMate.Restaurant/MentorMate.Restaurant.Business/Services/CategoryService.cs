@@ -4,7 +4,6 @@ using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.Categories;
 using MentorMate.Restaurant.Domain.Models.General;
-using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Business.Services
 {
@@ -24,7 +23,7 @@ namespace MentorMate.Restaurant.Business.Services
 
             if(model.ParentId != null)
             {
-                var parent = await _categoryRepository.GetByIdAsync(model.ParentId.Value);
+                var parent = await _categoryRepository.GetByIdAsync(model.ParentId);
 
                 if(parent == null)
                 {
@@ -42,13 +41,13 @@ namespace MentorMate.Restaurant.Business.Services
 
             await _categoryRepository.CreateAsync(category);
 
-            response = new Response(true, Messages.CategoryCreated);
+            response = new Response(true, Messages.CategoryCreated, category.Id);
 
             return response;
         }
 
         //Delete
-        public async Task<Response> DeleteAsync(int id)
+        public async Task<Response> DeleteAsync(string id)
         {
             var response = new Response();
 
@@ -61,6 +60,16 @@ namespace MentorMate.Restaurant.Business.Services
                 return response;
             }
 
+            //Get category's subcategories
+            var children = category.Children;
+
+            //Remove their parentId foreign keys
+            children.ToList().ForEach(x => x.ParentId = null);
+
+            //Update the children
+            await _categoryRepository.UpdateRangeAsync(children);
+
+            //Delete category
             await _categoryRepository.DeleteAsync(category);
 
             response = new Response(true, Messages.CategoryDeleted);
@@ -69,15 +78,11 @@ namespace MentorMate.Restaurant.Business.Services
         }
 
         //Get all
-        public async Task<IEnumerable<Category>> GetAllAsync()
-        {
-            var result = await _categoryRepository.GetAll().Include(x => x.Children).Where(x => x.ParentId == null).ToListAsync();
-
-            return result;
-        }
+        public async Task<ICollection<Category>> GetAllAsync() =>
+            await _categoryRepository.GetAllAsync();
 
         //Get by id
-        public async Task<Category> GetByIdAsync(int id)
+        public async Task<Category> GetByIdAsync(string id)
         {
             var result = await _categoryRepository.GetByIdAsync(id);
 
@@ -85,7 +90,7 @@ namespace MentorMate.Restaurant.Business.Services
         }
 
         //Update
-        public async Task<Response> UpdateAsync(int categoryId, UpdateCategoryModel model)
+        public async Task<Response> UpdateAsync(string categoryId, UpdateCategoryModel model)
         {
             var response = new Response();
 

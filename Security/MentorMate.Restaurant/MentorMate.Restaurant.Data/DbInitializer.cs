@@ -119,6 +119,8 @@ namespace MentorMate.Restaurant.Data
             var categories = FoodCategories.GetCategories();
 
             await _dbContext.Categories.AddRangeAsync(categories);
+
+            await _dbContext.SaveChangesAsync();
         }
 
         private async Task SeedProductsAsync()
@@ -128,9 +130,17 @@ namespace MentorMate.Restaurant.Data
                 return;
             }
 
-            var products = FoodMenu.GetProducts();
+            var categories = await _dbContext.Categories.ToListAsync();
+
+            Dictionary<string, string> categoryDictionary = categories.ToDictionary(x => x.Name, x => x.Id);
+
+            //var obj = "test";
+
+            var products = FoodMenu.GetProducts(categoryDictionary);
 
             await _dbContext.Products.AddRangeAsync(products);
+
+            await _dbContext.SaveChangesAsync();
         }
 
         private async Task SeedTablesAsync()
@@ -220,9 +230,7 @@ namespace MentorMate.Restaurant.Data
                 {
                     var productsCount = _dbContext.Products.Count();
 
-                    var randomNumber = rnd.Next(1, productsCount + 1);
-
-                    var product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == randomNumber);
+                    var product = _dbContext.Products.ToList().OrderBy(x => Guid.NewGuid()).First();
 
                     var productCount = rnd.Next(1, 4);
 

@@ -1,11 +1,12 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Domain.Models.Sorting;
 
 namespace MentorMate.Restaurant.Data.Repositories.Interfaces
 {
     public interface IProductRepository
     {
-        IQueryable<Product> GetAll();
-        Task<Product> GetByIdAsync(int id);
+        Task<ICollection<Product>> GetAllAsync(ProductSortingModel sort);
+        Task<Product> GetByIdAsync(string id);
         Task AddAsync(Product product);
         Task DeleteAsync(Product product);
         Task UpdateAsync(Product product);

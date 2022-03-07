@@ -1,5 +1,5 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
-using MentorMate.Restaurant.WebApi.Services;
+using MentorMate.Restaurant.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +7,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class TablesController : ControllerBase
     {
         private readonly ITableService _tableService;
@@ -18,13 +18,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTables()
+        public async Task<IActionResult> GetAll()
         {
             var tables = await _tableService.GetAllAsync();
 
             if (!tables.Any())
             {
-                return NotFound();
+                return NotFound(tables);
             }
 
             var response = Mapper.MapTableCollection(tables);
@@ -33,13 +33,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
         }
 
         [HttpGet("{tableId}")]
-        public async Task<IActionResult> GetById(int tableId)
+        public async Task<IActionResult> Get(int tableId)
         {
             var table = await _tableService.GetByIdAsync(tableId);
 
             if(table == null)
             {
-                return NotFound();
+                return NotFound(table);
             }
 
             var response = Mapper.MapTable(table);

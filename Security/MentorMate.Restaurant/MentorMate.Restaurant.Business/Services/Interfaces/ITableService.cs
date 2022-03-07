@@ -5,7 +5,7 @@ namespace MentorMate.Restaurant.Business.Services.Interfaces
 {
     public interface ITableService
     {
-        Task<IEnumerable<Table>> GetAllAsync();
+        Task<ICollection<Table>> GetAllAsync();
         Task<Table> GetByIdAsync(int tableId);
         Task<Response> CreateAsync();
         Task<Response> RemoveAsync(int tableId);

@@ -15,7 +15,12 @@ namespace MentorMate.Restaurant.Data.Repositories
         }
 
         //Get all
-        public IQueryable<User> GetAll() => _dbContext.Users;
+        public async Task<ICollection<User>> GetAllAsync(string currentUserId) 
+        {
+            var users = await _dbContext.Users.Where(x => x.Id != currentUserId).ToListAsync();
+
+            return users;
+        }
 
         //Get by id
         public async Task<User> GetByIdAsync(string id) =>

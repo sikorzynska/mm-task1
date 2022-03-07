@@ -18,7 +18,7 @@ namespace MentorMate.Restaurant.Business.Services
             _orderRepository = orderRepository;
         }
 
-        public async Task<Response> CompleteAsync(string waiterId, int orderId, bool isAdmin = false)
+        public async Task<Response> CompleteAsync(string waiterId, string orderId, bool isAdmin = false)
         {
             throw new ArgumentException();
             //var result = new OrderResponse();
@@ -159,7 +159,7 @@ namespace MentorMate.Restaurant.Business.Services
             //return result;
         }
 
-        public async Task<Response> DeleteAsync(int id)
+        public async Task<Response> DeleteAsync(string id)
         {
             var response = new Response();
 
@@ -179,30 +179,10 @@ namespace MentorMate.Restaurant.Business.Services
             return response;
         }
 
-        public async Task<IEnumerable<Order>> GetActiveAsync()
-        {
-            var result = await _orderRepository.GetAll()
-                .Where(x => x.Status == OrderStatus.Active)
-                .Include(x => x.Waiter)
-                .Include(x => x.OrderProducts)
-                .ThenInclude(x => x.Product)
-                .ToListAsync();
+        public async Task<ICollection<Order>> GetAllAsync(bool onlyActive = false) =>
+            await _orderRepository.GetAllAsync(onlyActive);
 
-            return result;
-        }
-
-        public async Task<IEnumerable<Order>> GetAllAsync()
-        {
-            var result = await _orderRepository.GetAll()
-                .Include(x => x.Waiter)
-                .Include(x => x.OrderProducts)
-                .ThenInclude(x => x.Product)
-                .ToListAsync();
-
-            return result;
-        }
-
-        public async Task<Order> GetByIdAsync(int id)
+        public async Task<Order> GetByIdAsync(string id)
         {
             var result = await _orderRepository.GetByIdAsync(id);
 

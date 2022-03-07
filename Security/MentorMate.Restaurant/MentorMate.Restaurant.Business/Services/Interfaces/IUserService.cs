@@ -6,7 +6,7 @@ namespace MentorMate.Restaurant.Business.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetAllAsync(string currentUserId);
+        Task<ICollection<User>> GetAllAsync(string currentUserId);
         Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);
         Task<Response> CreateAsync(CreateUserModel model);

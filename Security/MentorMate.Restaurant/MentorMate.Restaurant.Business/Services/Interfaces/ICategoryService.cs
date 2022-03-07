@@ -6,10 +6,10 @@ namespace MentorMate.Restaurant.Business.Services.Interfaces
 {
     public interface ICategoryService
     {
-        Task<IEnumerable<Category>> GetAllAsync();
-        Task<Category> GetByIdAsync(int id);
+        Task<ICollection<Category>> GetAllAsync();
+        Task<Category> GetByIdAsync(string id);
         Task<Response> CreateAsync(CreateCategoryModel model);
-        Task<Response> DeleteAsync(int id);
-        Task<Response> UpdateAsync(int categoryId, UpdateCategoryModel model);
+        Task<Response> DeleteAsync(string id);
+        Task<Response> UpdateAsync(string categoryId, UpdateCategoryModel model);
     }
 }

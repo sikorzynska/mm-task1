@@ -55,10 +55,9 @@ namespace MentorMate.Restaurant.Data.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ParentId = table.Column<int>(type: "int", nullable: true)
+                    ParentId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -201,9 +200,8 @@ namespace MentorMate.Restaurant.Data.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
@@ -223,8 +221,7 @@ namespace MentorMate.Restaurant.Data.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TableId = table.Column<int>(type: "int", nullable: false),
                     WaiterId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -251,8 +248,8 @@ namespace MentorMate.Restaurant.Data.Migrations
                 name: "OrderProducts",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductCount = table.Column<int>(type: "int", nullable: false),
                     ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },

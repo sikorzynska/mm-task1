@@ -6,7 +6,7 @@ using MentorMate.Restaurant.Domain.Models.Products;
 using MentorMate.Restaurant.Domain.Models.Tables;
 using MentorMate.Restaurant.Domain.Models.Users;
 
-namespace MentorMate.Restaurant.WebApi.Services
+namespace MentorMate.Restaurant.WebApi.Extensions
 {
     public static class Mapper
     {

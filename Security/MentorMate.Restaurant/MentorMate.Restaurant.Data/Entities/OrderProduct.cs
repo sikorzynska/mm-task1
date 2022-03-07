@@ -4,9 +4,9 @@ namespace MentorMate.Restaurant.Data.Entities
 {
     public class OrderProduct
     {
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
         public Order Order { get; set; }
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
         public Product Product { get; set; }
         //Quantity for a particular product for easy access
         public int ProductCount { get; set; }

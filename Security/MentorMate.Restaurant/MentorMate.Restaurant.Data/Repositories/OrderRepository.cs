@@ -1,4 +1,5 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
+using MentorMate.Restaurant.Data.Entities.Enums;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +12,33 @@ namespace MentorMate.Restaurant.Data.Repositories
         }
 
         //Get all
-        public IQueryable<Order> GetAll() => _dbContext.Orders;
+        public async Task<ICollection<Order>> GetAllAsync(bool onlyActive = false)
+        {
+            var result = new List<Order>();
+
+            if(onlyActive)
+            {
+                result = await _dbContext.Orders
+                    .Where(x => x.Status == OrderStatus.Active)
+                    .Include(x => x.Waiter)
+                    .Include(x => x.OrderProducts)
+                    .ThenInclude(x => x.Product)
+                    .ToListAsync();
+
+                return result;
+            }
+
+            result = await _dbContext.Orders
+                .Include(x => x.Waiter)
+                .Include(x => x.OrderProducts)
+                .ThenInclude(x => x.Product)
+                .ToListAsync();
+
+            return result;
+        }
 
         //Get by id
-        public async Task<Order> GetByIdAsync(int id) =>
+        public async Task<Order> GetByIdAsync(string id) =>
             await _dbContext.Orders
             .Include(x => x.Waiter)
             .Include(x => x.OrderProducts)

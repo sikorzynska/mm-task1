@@ -24,19 +24,16 @@ namespace MentorMate.Restaurant.Data.Migrations
 
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Category", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
+                    b.Property<string>("ParentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -47,11 +44,8 @@ namespace MentorMate.Restaurant.Data.Migrations
 
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Order", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
@@ -77,11 +71,11 @@ namespace MentorMate.Restaurant.Data.Migrations
 
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.OrderProduct", b =>
                 {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProductCount")
                         .HasColumnType("int");
@@ -98,14 +92,12 @@ namespace MentorMate.Restaurant.Data.Migrations
 
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Product", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -421,7 +413,7 @@ namespace MentorMate.Restaurant.Data.Migrations
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Table", b =>
                 {
                     b.HasOne("MentorMate.Restaurant.Data.Entities.User", "Waiter")
-                        .WithMany()
+                        .WithMany("Tables")
                         .HasForeignKey("WaiterId");
 
                     b.Navigation("Waiter");
@@ -498,6 +490,11 @@ namespace MentorMate.Restaurant.Data.Migrations
             modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.Table", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("MentorMate.Restaurant.Data.Entities.User", b =>
+                {
+                    b.Navigation("Tables");
                 });
 #pragma warning restore 612, 618
         }

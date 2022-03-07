@@ -7,10 +7,10 @@ namespace MentorMate.Restaurant.Business.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<Product>> GetAllAsync(ProductSortingModel sort);
-        Task<Product> GetByIdAsync(int id);
+        Task<ICollection<Product>> GetAllAsync(ProductSortingModel sort);
+        Task<Product> GetByIdAsync(string id);
         Task<Response> CreateAsync(CreateProductModel model);
-        Task<Response> DeleteAsync(int id);
-        Task<Response> UpdateAsync(int productId, UpdateProductModel model);
+        Task<Response> DeleteAsync(string id);
+        Task<Response> UpdateAsync(string productId, UpdateProductModel model);
     }
 }

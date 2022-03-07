@@ -1,8 +1,9 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Misc;
+using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.Products;
 using MentorMate.Restaurant.Domain.Models.Sorting;
-using MentorMate.Restaurant.WebApi.Services;
+using MentorMate.Restaurant.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -22,13 +23,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetProducts([FromQuery] ProductSortingModel sort)
+        public async Task<IActionResult> GetAll([FromQuery] ProductSortingModel sort)
         {
             var products = await _productService.GetAllAsync(sort);
 
             if (!products.Any())
             {
-                return NotFound();
+                return NotFound(products);
             }
 
             var response = Mapper.MapProductCollection(products);
@@ -38,13 +39,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpGet("{productId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetProduct([FromRoute] int productId)
+        public async Task<IActionResult> Get([FromRoute] string productId)
         {
             var product = await _productService.GetByIdAsync(productId);
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound(product);
             }
 
             var response = Mapper.MapProduct(product);
@@ -54,7 +55,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> CreateProduct([FromForm] CreateProductModel model)
+        public async Task<IActionResult> Create([FromBody] CreateProductModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -68,12 +69,12 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return BadRequest(response);
             }
 
-            return Ok(response);
+            return CreatedAtAction(nameof(Get), new { productId = response.EntityId }, response);
         }
 
         [HttpPut("{productId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int productId, [FromForm] UpdateProductModel model)
+        public async Task<IActionResult> Update([FromRoute] string productId, [FromBody] UpdateProductModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -84,6 +85,11 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
             if (!response.Success)
             {
+                if(response.Message == Messages.ProductNotFound)
+                {
+                    return NotFound(response);
+                }
+
                 return BadRequest(response);
             }
 
@@ -92,7 +98,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpDelete("{productId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> DeleteProduct([FromRoute] int productId)
+        public async Task<IActionResult> Delete([FromRoute] string productId)
         {
             var response = await _productService.DeleteAsync(productId);
 

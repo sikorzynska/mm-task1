@@ -1,7 +1,8 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Misc;
+using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.Users;
-using MentorMate.Restaurant.WebApi.Services;
+using MentorMate.Restaurant.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -22,7 +23,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetAll()
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
@@ -30,7 +31,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
             if(!users.Any())
             {
-                return NotFound();
+                return NotFound(users);
             }
 
             var response = Mapper.MapUserCollection(users);
@@ -42,13 +43,13 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpGet("{userId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetUserById([FromRoute] string userId)
+        public async Task<IActionResult> Get([FromRoute] string userId)
         {
             var user = await _userService.GetByIdAsync(userId);
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(user);
             }
 
             var response = Mapper.MapUser(user);
@@ -60,7 +61,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetCurrentUser()
+        public async Task<IActionResult> Me()
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
@@ -68,7 +69,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(user);
             }
 
             var response = Mapper.MapUser(user);
@@ -80,7 +81,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> CreateUser([FromForm] CreateUserModel model)
+        public async Task<IActionResult> Create([FromBody] CreateUserModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -94,12 +95,12 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return BadRequest(response);
             }
 
-            return Ok(response);
+            return CreatedAtAction(nameof(Get), new { userId = response.EntityId }, response);
         }
 
         [HttpPut("{userId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> UpdateUser([FromRoute] string userId, [FromForm] UpdateUserModel model)
+        public async Task<IActionResult> Update([FromRoute] string userId, [FromBody] UpdateUserModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -110,6 +111,11 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
             if (!response.Success)
             {
+                if(response.Message == Messages.UserNotFound)
+                {
+                    return NotFound(response);
+                }
+
                 return BadRequest(response);
             }
 
@@ -118,7 +124,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
 
         [HttpDelete("{userId}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> DeleteUser([FromRoute] string userId)
+        public async Task<IActionResult> Delete([FromRoute] string userId)
         {
             var response = await _userService.DeleteAsync(userId);
 

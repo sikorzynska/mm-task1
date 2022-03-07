@@ -12,7 +12,13 @@ namespace MentorMate.Restaurant.Data.Repositories
         }
 
         //Get all
-        public IQueryable<Table> GetAll() => _dbContext.Tables;
+        public async Task<ICollection<Table>> GetAllAsync() =>
+            await _dbContext.Tables
+            .Include(x => x.Waiter)
+            .Include(x => x.Orders.Where(o => o.Status == OrderStatus.Active))
+            .ThenInclude(x => x.OrderProducts)
+            .ThenInclude(x => x.Product)
+            .ToListAsync();
 
         //Get by id
         public async Task<Table> GetByIdAsync(int id) =>

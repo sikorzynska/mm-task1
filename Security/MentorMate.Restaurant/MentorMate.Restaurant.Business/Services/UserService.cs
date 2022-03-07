@@ -22,7 +22,7 @@ namespace MentorMate.Restaurant.Business.Services
         {
             var response = new Response();
 
-            if(await EmailIsTaken(model.Email))
+            if(await EmailTakenAsync(model.Email))
             {
                 response = new Response(false, Messages.UserEmailTaken);
 
@@ -45,9 +45,14 @@ namespace MentorMate.Restaurant.Business.Services
                 Email = model.Email,
             };
 
+            if(model.Role == UserRoles.Waiter)
+            {
+                user.Tables = new List<Table>();
+            }
+
             await _userRepository.CreateAsync(user, model.Password, model.Role);
 
-            response = new Response(true, Messages.UserCreated);
+            response = new Response(true, Messages.UserCreated, user.Id);
 
             return response;
         }
@@ -72,9 +77,9 @@ namespace MentorMate.Restaurant.Business.Services
             return response;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync(string currentUserId) 
+        public async Task<ICollection<User>> GetAllAsync(string currentUserId) 
         {
-            var result = await _userRepository.GetAll().Where(x => x.Id != currentUserId).ToListAsync();
+            var result = await _userRepository.GetAllAsync(currentUserId);
 
             return result;
         }
@@ -106,7 +111,7 @@ namespace MentorMate.Restaurant.Business.Services
                 return response;
             }
 
-            if(!string.IsNullOrEmpty(model.Email) && await EmailIsTaken(model.Email))
+            if(!string.IsNullOrEmpty(model.Email) && await EmailTakenAsync(model.Email))
             {
                 response = new Response(false, Messages.UserEmailTaken);
 
@@ -145,7 +150,7 @@ namespace MentorMate.Restaurant.Business.Services
         }
 
         #region private methods
-        private async Task<bool> EmailIsTaken(string email) =>
+        private async Task<bool> EmailTakenAsync(string email) =>
             await _userRepository.GetByEmailAsync(email) != null;
 
         private bool RoleIsValid(string role) =>
