@@ -72,7 +72,7 @@ namespace MentorMate.Restaurant.Data.Repositories
             await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
 
         //Add
-        public async Task AddAsync(Product product)
+        public async Task CreateAsync(Product product)
         {
             await _dbContext.Products.AddAsync(product);
 

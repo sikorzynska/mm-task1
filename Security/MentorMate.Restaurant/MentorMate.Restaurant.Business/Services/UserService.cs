@@ -5,7 +5,6 @@ using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.General;
 using MentorMate.Restaurant.Domain.Models.Users;
-using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Business.Services
 { 

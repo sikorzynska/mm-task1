@@ -7,7 +7,7 @@ namespace MentorMate.Restaurant.Data.Repositories.Interfaces
     {
         Task<ICollection<Product>> GetAllAsync(ProductSortingModel sort);
         Task<Product> GetByIdAsync(string id);
-        Task AddAsync(Product product);
+        Task CreateAsync(Product product);
         Task DeleteAsync(Product product);
         Task UpdateAsync(Product product);
     }

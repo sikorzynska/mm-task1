@@ -1,11 +1,9 @@
 ﻿using MentorMate.Restaurant.Business.Services.Interfaces;
 using MentorMate.Restaurant.Data.Entities;
-using MentorMate.Restaurant.Data.Entities.Enums;
 using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.General;
 using MentorMate.Restaurant.Domain.Models.Orders;
-using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Business.Services
 {

@@ -47,7 +47,7 @@ namespace MentorMate.Restaurant.Business.Services
                 CategoryId = model.CategoryId,
             };
 
-            await _productRepository.AddAsync(product);
+            await _productRepository.CreateAsync(product);
 
             response = new Response(true, Messages.ProductCreated, product.Id);
 

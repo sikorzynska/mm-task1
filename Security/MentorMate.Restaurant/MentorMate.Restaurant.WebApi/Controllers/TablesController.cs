@@ -27,7 +27,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(tables);
             }
 
-            var response = Mapper.MapTableCollection(tables);
+            var response = MapExtension.MapTableCollection(tables);
 
             return Ok(response);
         }
@@ -42,7 +42,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(table);
             }
 
-            var response = Mapper.MapTable(table);
+            var response = MapExtension.MapTable(table);
 
             return Ok(response);
         }

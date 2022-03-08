@@ -9,148 +9,148 @@ namespace MentorMate.Restaurant.Data.Misc
             {
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Roasted chicken",
-                    Description = "Description placeholder",
-                    Price = 9.99m
-                },
-                new Product
-                {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Chicken pot pie.",
-                    Description = "Description placeholder",
-                    Price = 6.65m
-                },
-                new Product
-                {
-                    CategoryId = categoryDictionary["Appetizer"],
-                    Name = "Mashed potatoes",
-                    Description = "Description placeholder",
-                    Price = 4.20m
-                },
-                new Product
-                {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Fried chicken",
+                    CategoryId = categoryDictionary["Salad"],
+                    Name = "Ceasar Salad",
                     Description = "Description placeholder",
                     Price = 5.99m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Beef burger",
+                    CategoryId = categoryDictionary["Salad"],
+                    Name = "Greek Salad",
+                    Description = "Description placeholder",
+                    Price = 6.65m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Salad"],
+                    Name = "Caprese Salad",
+                    Description = "Description placeholder",
+                    Price = 4.20m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Fried"],
+                    Name = "Fries",
+                    Description = "Description placeholder",
+                    Price = 2.50m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Fried"],
+                    Name = "Onion Rings",
+                    Description = "Description placeholder",
+                    Price = 2.50m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Fried"],
+                    Description = "Description placeholder",
+                    Name = "Fried Mozzarella Sticks",
+                    Price = 3.50m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Burger"],
+                    Name = "Pork Burger",
                     Description = "Description placeholder",
                     Price = 5
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
+                    CategoryId = categoryDictionary["Burger"],
                     Description = "Description placeholder",
-                    Name = "Chicken burger",
-                    Price = 5
-                },
-                new Product
-                {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Pork burger",
-                    Description = "Description placeholder",
-                    Price = 5
-                },
-                new Product
-                {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Description = "Description placeholder",
-                    Name = "Veggie burger",
+                    Name = "Veggie Burger",
                     Price = 4.10m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Pepperoni pizza",
+                    CategoryId = categoryDictionary["Burger"],
+                    Name = "Chicken Burger",
                     Description = "Description placeholder",
                     Price = 5.35m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Vegeterian pizza",
+                    CategoryId = categoryDictionary["Pizza"],
+                    Name = "Vegeterian Pizza",
                     Description = "Description placeholder",
                     Price = 4.35m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Chicken soup",
+                    CategoryId = categoryDictionary["Pizza"],
+                    Name = "Pepperoni Pizza",
                     Description = "Description placeholder",
                     Price = 3.10m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Meatloaf",
+                    CategoryId = categoryDictionary["Pizza"],
+                    Name = "Neapolitan Pizza",
                     Description = "Description placeholder",
                     Price = 8.85m,
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
+                    CategoryId = categoryDictionary["Meat"],
                     Name = "Lasagna",
                     Description = "Description placeholder",
                     Price = 7.85m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Main Menu"],
-                    Name = "Spaghetti with meatballs",
+                    CategoryId = categoryDictionary["Meat"],
+                    Name = "Meatloaf",
                     Description = "Description placeholder",
                     Price = 4.10m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Appetizer"],
-                    Name = "Mozzarella sticks",
+                    CategoryId = categoryDictionary["Meat"],
+                    Name = "Beef Steak",
                     Description = "Description placeholder",
                     Price = 2.35m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Appetizer"],
-                    Name = "Cheddar biscuits",
+                    CategoryId = categoryDictionary["Vegetarian"],
+                    Name = "Extra Vegetable Fried Rice",
                     Description = "Description placeholder",
                     Price = 2.35m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Appetizer"],
-                    Name = "Pigs in a blanket",
+                    CategoryId = categoryDictionary["Vegetarian"],
+                    Name = "Crispy Baked Falafel",
                     Description = "Description placeholder",
                     Price = 3.90m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Appetizer"],
-                    Name = "Spinach cheese dip with chips",
+                    CategoryId = categoryDictionary["Vegetarian"],
+                    Name = "Best Lentil Soup",
                     Description = "Description placeholder",
                     Price = 6.05m,
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Appetizer"],
-                    Name = "Onion rings",
+                    CategoryId = categoryDictionary["Cake"],
+                    Name = "Chocolate Cake",
                     Description = "Description placeholder",
                     Price = 2.85m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Appetizer"],
-                    Name = "French fries",
+                    CategoryId = categoryDictionary["Cake"],
+                    Name = "Red Velvet Cake",
                     Description = "Description placeholder",
                     Price = 2.90m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Appetizer"],
-                    Name = "Breadsticks",
+                    CategoryId = categoryDictionary["Cake"],
+                    Name = "Cheesecake",
                     Description = "Description placeholder",
                     Price = 2.15m
                 },
@@ -240,21 +240,21 @@ namespace MentorMate.Restaurant.Data.Misc
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Non-alcoholic"],
+                    CategoryId = categoryDictionary["Carbonated drink"],
                     Name = "Coke",
                     Description = "Description placeholder",
                     Price = 1.50m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Non-alcoholic"],
+                    CategoryId = categoryDictionary["Carbonated drink"],
                     Name = "Coke light",
                     Description = "Description placeholder",
                     Price = 1.55m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Non-alcoholic"],
+                    CategoryId = categoryDictionary["Carbonated drink"],
                     Name = "Fanta",
                     Description = "Description placeholder",
                     Price = 1.55m,
@@ -262,55 +262,55 @@ namespace MentorMate.Restaurant.Data.Misc
                 new Product
                 {
                     CategoryId = categoryDictionary["Beer"],
-                    Name = "Beer",
+                    Name = "Bud Light",
                     Description = "Description placeholder",
                     Price = 2
                 },
                 new Product
                 {
                     CategoryId = categoryDictionary["Beer"],
-                    Name = "Cider",
+                    Name = "Coors Light",
                     Description = "Description placeholder",
                     Price = 1.90m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Water"],
-                    Name = "Bottled water",
+                    CategoryId = categoryDictionary["Beer"],
+                    Name = "Corona Extra",
                     Description = "Description placeholder",
                     Price = 1.10m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Base liquor"],
+                    CategoryId = categoryDictionary["Liquour"],
                     Name = "Whiskey",
                     Description = "Description placeholder",
                     Price = 3m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Base liquor"],
+                    CategoryId = categoryDictionary["Liquour"],
                     Name = "Brandy",
                     Description = "Description placeholder",
                     Price = 3.10m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Base liquor"],
+                    CategoryId = categoryDictionary["Liquour"],
                     Name = "Gin ",
                     Description = "Description placeholder",
                     Price = 1.90m,
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Base liquor"],
+                    CategoryId = categoryDictionary["Liquour"],
                     Name = "Vodka",
                     Description = "Description placeholder",
                     Price = 2
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Base liquor"],
+                    CategoryId = categoryDictionary["Liquour"],
                     Name = "Rum",
                     Description = "Description placeholder",
                     Price = 1.90m
@@ -331,38 +331,73 @@ namespace MentorMate.Restaurant.Data.Misc
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Breakfast"],
-                    Name = "Cereal",
+                    CategoryId = categoryDictionary["Juice"],
+                    Name = "Apple Juice",
                     Description = "Description placeholder",
                     Price = 1.90m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Breakfast"],
-                    Name = "Egg omelette",
+                    CategoryId = categoryDictionary["Juice"],
+                    Name = "Orange Juice",
                     Description = "Description placeholder",
                     Price = 2.50m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Pastries"],
-                    Name = "Croissant",
+                    CategoryId = categoryDictionary["Juice"],
+                    Name = "Peach Juice",
                     Description = "Description placeholder",
                     Price = 1.10m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Pastries"],
-                    Name = "Waffles",
+                    CategoryId = categoryDictionary["Coffee"],
+                    Name = "Expresso",
                     Description = "Description placeholder",
                     Price = 2.79m
                 },
                 new Product
                 {
-                    CategoryId = categoryDictionary["Pastries"],
-                    Name = "Pancakes",
+                    CategoryId = categoryDictionary["Coffee"],
+                    Name = "Decaf",
                     Description = "Description placeholder",
                     Price = 2.89m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Coffee"],
+                    Name = "Arabica",
+                    Description = "Description placeholder",
+                    Price = 2.89m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Tea"],
+                    Name = "Black Tea",
+                    Description = "Description placeholder",
+                    Price = 1.89m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Tea"],
+                    Name = "Green Tea",
+                    Description = "Description placeholder",
+                    Price = 1.89m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Tea"],
+                    Name = "White Tea",
+                    Description = "Description placeholder",
+                    Price = 1.89m
+                },
+                new Product
+                {
+                    CategoryId = categoryDictionary["Water"],
+                    Name = "Bottled Spring Water",
+                    Description = "Description placeholder",
+                    Price = 0.89m
                 },
             };
     }

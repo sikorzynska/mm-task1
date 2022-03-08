@@ -29,7 +29,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(orders);
             }
 
-            var response = Mapper.MapOrderCollection(orders);
+            var response = MapExtension.MapOrderCollection(orders);
 
             return Ok(response);
         }
@@ -45,7 +45,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(order);
             }
 
-            var response = Mapper.MapOrder(order);
+            var response = MapExtension.MapOrder(order);
 
             return Ok(response);
         }

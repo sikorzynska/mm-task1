@@ -34,7 +34,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(users);
             }
 
-            var response = Mapper.MapUserCollection(users);
+            var response = MapExtension.MapUserCollection(users);
 
             response.ToList().ForEach(x => x.Role = _userService.GetRoleAsync(x.Id).Result);
 
@@ -52,7 +52,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(user);
             }
 
-            var response = Mapper.MapUser(user);
+            var response = MapExtension.MapUser(user);
 
             response.Role = await _userService.GetRoleAsync(userId);
 
@@ -72,7 +72,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(user);
             }
 
-            var response = Mapper.MapUser(user);
+            var response = MapExtension.MapUser(user);
 
             response.Role = await _userService.GetRoleAsync(user.Id);
 

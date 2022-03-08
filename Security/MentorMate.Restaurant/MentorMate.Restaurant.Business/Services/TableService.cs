@@ -5,7 +5,6 @@ using MentorMate.Restaurant.Data.Repositories.Interfaces;
 using MentorMate.Restaurant.Domain.Consts;
 using MentorMate.Restaurant.Domain.Models.General;
 using MentorMate.Restaurant.Domain.Models.Tables;
-using Microsoft.EntityFrameworkCore;
 
 namespace MentorMate.Restaurant.Business.Services
 {
@@ -23,9 +22,29 @@ namespace MentorMate.Restaurant.Business.Services
             throw new NotImplementedException();
         }
 
-        public Task<Response> CreateAsync()
+        public async Task<Response> CreateAsync(CreateTableModel model)
         {
-            throw new NotImplementedException();
+            var response = new Response();
+
+            var tables = await _tableRepository.GetAllAsync();
+
+            if(tables.Count() >= 20)
+            {
+                response = new Response(false, Messages.TablesCapacityReached);
+
+                return response;
+            }
+
+            var table = new Table
+            {
+                Capacity = model.Capacity,
+            };
+
+            await _tableRepository.CreateAsync(table);
+
+            response = new Response(true, Messages.TableCreated, table.Id.ToString());
+
+            return response;
         }
 
         public async Task<ICollection<Table>> GetAllAsync() =>
@@ -83,18 +102,5 @@ namespace MentorMate.Restaurant.Business.Services
         {
             throw new NotImplementedException();
         }
-
-        #region inner functions
-        //private async Task<decimal> CalculateTableBill(int tableId)
-        //{
-        //    var orders = await _orderRepository.GetAll();
-
-        //    var activeOrders = orders.Where(x => x.TableId == tableId && x.Status == OrderStatus.Active).ToList();
-
-        //    var result = activeOrders.SelectMany(x => x.OrderProducts.Select(v => v.ProductPrice * v.ProductCount)).Sum();
-
-        //    return result;
-        //}
-        #endregion
     }
 }

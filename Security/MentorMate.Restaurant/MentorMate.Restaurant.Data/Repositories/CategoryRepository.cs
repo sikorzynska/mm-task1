@@ -12,11 +12,11 @@ namespace MentorMate.Restaurant.Data.Repositories
 
         //Get all
         public async Task<ICollection<Category>> GetAllAsync() => 
-            await _dbContext.Categories.Include(x => x.Children).Where(x => x.ParentId == null).ToListAsync();
+            await _dbContext.Categories.Include(x => x.Children).ThenInclude(x => x.Children).Where(x => x.ParentId == null).ToListAsync();
 
         //Get by id
         public async Task<Category> GetByIdAsync(string id) =>
-            await _dbContext.Categories.Include(x => x.Children).FirstOrDefaultAsync(x => x.Id == id);
+            await _dbContext.Categories.Include(x => x.Children).ThenInclude(x => x.Children).FirstOrDefaultAsync(x => x.Id == id);
 
         //Add
         public async Task CreateAsync(Category category)

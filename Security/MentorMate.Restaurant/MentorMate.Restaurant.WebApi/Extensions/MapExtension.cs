@@ -8,7 +8,7 @@ using MentorMate.Restaurant.Domain.Models.Users;
 
 namespace MentorMate.Restaurant.WebApi.Extensions
 {
-    public static class Mapper
+    public static class MapExtension
     {
         #region product
         public static IEnumerable<GeneralProductModel> MapProductCollection(IEnumerable<Product> products) =>
@@ -53,6 +53,7 @@ namespace MentorMate.Restaurant.WebApi.Extensions
         #endregion
 
         #region category
+        //This is very ugly I know, but I couldn't figure out a cleaner way to do it
         public static IEnumerable<GeneralCategoryModel> MapCategoryCollection(IEnumerable<Category> categories) =>
             categories.Select(x => new GeneralCategoryModel
             {
@@ -62,6 +63,20 @@ namespace MentorMate.Restaurant.WebApi.Extensions
                 {
                     Id = v.Id,
                     Name= v.Name,
+                    Subcategories = v.Children == null
+                    ? null
+                    : v.Children.Select(c => new GeneralCategoryModel
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        Subcategories = c.Children == null
+                        ? null
+                        : c.Children.Select(z => new GeneralCategoryModel
+                        {
+                            Id = z.Id,
+                            Name = z.Name,
+                        }).ToList()
+                    }).ToList()
                 }).ToList(),
             }).ToList();
 
@@ -74,7 +89,26 @@ namespace MentorMate.Restaurant.WebApi.Extensions
                 Subcategories = category.Children.Select(v => new GeneralCategoryModel
                 {
                     Id = v.Id,
-                    Name = v.Name
+                    Name = v.Name,
+                    Subcategories = v.Children.Select(c => new GeneralCategoryModel
+                    {
+                        Id = c.Id,
+                        Name= c.Name,
+                        Subcategories = c.Children == null
+                        ? null
+                        : c.Children.Select(x => new GeneralCategoryModel
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Subcategories = x.Children == null
+                            ? null
+                            : x.Children.Select(z => new GeneralCategoryModel
+                            {
+                                Id = z.Id,
+                                Name = z.Name,
+                            }).ToList()
+                        }).ToList()
+                    }).ToList(),
                 }).ToList()
             };
         #endregion

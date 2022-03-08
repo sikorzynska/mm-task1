@@ -32,7 +32,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(products);
             }
 
-            var response = Mapper.MapProductCollection(products);
+            var response = MapExtension.MapProductCollection(products);
 
             return Ok(response);
         }
@@ -48,7 +48,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(product);
             }
 
-            var response = Mapper.MapProduct(product);
+            var response = MapExtension.MapProduct(product);
 
             return Ok(response);
         }

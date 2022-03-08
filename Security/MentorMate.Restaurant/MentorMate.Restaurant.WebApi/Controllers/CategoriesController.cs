@@ -31,7 +31,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(categories);
             }
 
-            var response = Mapper.MapCategoryCollection(categories);
+            var response = MapExtension.MapCategoryCollection(categories);
 
             return Ok(response);
         }
@@ -47,7 +47,7 @@ namespace MentorMate.Restaurant.WebApi.Controllers
                 return NotFound(category);
             }
 
-            var response = Mapper.MapCategory(category);
+            var response = MapExtension.MapCategory(category);
 
             return Ok(response);
         }

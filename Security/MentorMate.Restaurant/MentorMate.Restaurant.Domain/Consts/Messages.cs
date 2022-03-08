@@ -89,6 +89,9 @@
         public const string TableCleared = "Table successfully cleared";
         //Id
         public const string TableInvalidId = "Invalid table ID";
+        //Capacity
+        public const string TableCapacity = "Table capacity must be between 2 and 12";
+        public const string TablesCapacityReached = "There is no room for more tables";
         #endregion
     }
 }
