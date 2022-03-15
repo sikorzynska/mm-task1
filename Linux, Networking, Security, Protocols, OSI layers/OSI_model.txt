@@ -1,0 +1,7 @@
+Physical: repeaters / network adapters
+Data link: bridges and switches,
+Network: routers or IP switches
+Transport: TCP, SPX
+Session: NetBIOS
+Presentation: NCP, AFP, TDI
+Application: FTP, TELNET, HTTP/HTTPS

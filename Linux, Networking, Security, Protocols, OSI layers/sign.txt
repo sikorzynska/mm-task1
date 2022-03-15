@@ -1,0 +1,5 @@
+GPG keys aka GnuPG
+
+Private keys are the first half of a GPG key which is used to decrypt messages that are encrypted using the public key, as well as signing messages - a technique used to prove that you own the key. As the name implies, this part of the key should never be shared.
+
+Public keys are the second half of a key which is used to encrypt messages for the owner of the private key. As the name implies, this part of the key is safe to give out to the public, as it can only be used to encrypt messages or data for the private key owner.

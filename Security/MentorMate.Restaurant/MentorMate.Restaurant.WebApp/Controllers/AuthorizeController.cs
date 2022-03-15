@@ -1,18 +1,17 @@
 ﻿using MentorMate.Restaurant.Data.Entities;
 using MentorMate.Restaurant.Domain.Configurations.Auth;
 using MentorMate.Restaurant.Domain.Consts;
-using MentorMate.Restaurant.Domain.Models.Auth;
+using MentorMate.Restaurant.WebApp.Models.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace MentorMate.Restaurant.WebApi.Controllers
+namespace MentorMate.Restaurant.WebApp.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthorizeController : ControllerBase
+    [Controller]
+    public class AuthorizeController : Controller
     {
         private readonly AuthOptions _options;
         private readonly SignInManager<User> _signInManager;
@@ -28,32 +27,53 @@ namespace MentorMate.Restaurant.WebApi.Controllers
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AuthorizeAsync([FromForm] AuthorizeRequest request)
+        [HttpGet]
+        public async Task<IActionResult> Login()
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user == null)
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser != null)
             {
-                return BadRequest(new AuthorizeErrorResponse(Messages.LoginError));
+                return RedirectToAction("Index", "Home");
             }
 
-            var signInResult = await _signInManager.PasswordSignInAsync(user, request.Password, false, false);
-            if (!signInResult.Succeeded)
-            {
-                return BadRequest(new AuthorizeErrorResponse(Messages.LoginError));
-            }
-
-            var response = new AuthorizeResponse
-            {
-                AccessToken = await GetAccessTokenAsync(user),
-                TokenType = "Bearer",
-                ExpiresIn = _options.TokenLifetimeSeconds
-            };
-
-            return Ok(response);
+            return View();
         }
 
-        private async Task<string> GetAccessTokenAsync(User user)
+        [HttpPost]
+        public async Task<IActionResult> Login(UserLoginFormModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, Messages.LoginError);
+
+                return View(model);
+            }
+
+            var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
+            if (!signInResult.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, Messages.LoginError);
+
+                return View(model);
+            }
+
+            var token = await GenerateAccessToken(user);
+
+            //todo: implement logic for saving the jwt token in the user's browser
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        private async Task<string> GenerateAccessToken(User user)
         {
             if (user == null)
             {

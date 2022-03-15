@@ -1,0 +1,12 @@
+telnet www.google.com 80
+
+[press enter to send empty request]
+
+HTTP/1.0 400 Bad Request
+Content-Length: 54
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 14 Mar 2022 14:55:37 GMT
+
+<html><title>Error 400 (Bad Request)!!1</title></html>
+
+Connection to host lost.

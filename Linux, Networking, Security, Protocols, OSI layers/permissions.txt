@@ -1,0 +1,10 @@
+755 - owner can read, write & execute, others can read & execute
+640 - owner can read and write permissions, the group has read permissions, and all other users have no rights to the file
+543 - owner can read and execute, group can read, others can write and execute
+531 - owner can read and execute, group can write and execute, others can execute
+721 - owner can read, write and execute, group can write, others can execute
+rwxr-xr-x (755) - owner can read, write & execute, others can read & execute
+r-xr----- (500) - read-only, owner can read and execute
+-w-r----x (601) - owner can write and read, others can execute
+-rw---x--x (611) - owner can read and write, groups can execute, others can execute
+--xr---w- (302) - owner can read and execute, others can write

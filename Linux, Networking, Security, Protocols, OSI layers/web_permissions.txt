@@ -1,0 +1,4 @@
+the web server permissions should be 750
+full access for the owner
+read / execute for group
+0 access for others

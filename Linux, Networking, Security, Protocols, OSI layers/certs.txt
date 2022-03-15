@@ -1,0 +1,5 @@
+Self-signed certificate:
+A self-signed certificate is created, signed, and issued by the subject of the certificate (the entity it is issued to), while a 
+
+Signed certificate:
+CA certificate is created, signed, and issued by a third party called a certificate authority (CA) that is authorized to validate the identity of the applicant.
