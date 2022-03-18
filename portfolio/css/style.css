@@ -1,0 +1,48 @@
+.profile-picture {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.bi-big {
+    font-size: 2rem;
+}
+
+.border-black {
+    border: 1px solid rgb(0, 0, 0) !important;
+}
+
+.border-bottom-black {
+    border-bottom: 1px solid black;
+}
+
+.border-sides-black {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+body {
+    background-color: gainsboro !important;
+}
+
+.main {
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+
+.image-div {
+      height: 300px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+}
+
+  .img-div img {
+    max-height: 100%;
+    max-width: 100%;
+  }
+
+  .alt {
+    position: relative;
+    top: -100px;
+  }
